@@ -26,17 +26,5 @@
         - what python use for actual cont allocation?
             - array module
             - numpy -> actual contigous memory
-- what are techniques use to solve array questions?
-    - brute force
-    - two pointers
-    - sliding window
-    - prefix sum
-    - hashing (freq/lookup)
-    - sorting + logic
-    - greedy thinking
-    - kadane's algo
-    - binary search
-    - monotonic stack
-    - bit manipulation
 
 ------

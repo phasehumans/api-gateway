@@ -1,0 +1,1 @@
+// constant on internal value
