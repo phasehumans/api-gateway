@@ -169,3 +169,6 @@
         - rnn for sequence / time
         - cnn process parallel
         - rnn process sequentail
+- attention
+    - model decide where to focus
+    - look back and focus on what matters right now

@@ -23,3 +23,10 @@ function logData(user: UserType){
 }
 
 // types is similar to interfaces but more feat - union
+
+
+
+// optional ? parameter 
+// interfaces using interfaces
+
+// implementing interface
