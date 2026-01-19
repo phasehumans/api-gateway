@@ -1,6 +1,27 @@
-### Pre-Transformer
+### AI Overview
 
-- ai : getting machines to perform tasks that req human intelligence
+- what does it mean to learn?
+    - building accuarate mental model to understand, predict and use
+    - learning : confusion -> pattern recognition -> understanding -> prediction
+- what is knowledge? what does it mean to know something?
+    - mental model that represents how something works
+    - understanding + structure + predictive power
+        - why knowledge needs to be in structured, why not unstructure?
+            - brain connect ideas, structure is req to build relationships
+            - reasoning needs chaining; chain needs connection; unstructure knowledge dont have connections
+            - structure : info -> understanding
+    - child [2+2=4 -> memory]
+    - but when child can do 3+3, and use to count obj
+    - then child knows addition
+    - knowing - ability to use mental model to understand, predict and act
+- what is intelligence?
+    - ability to observe, understand hidden patterns, predict outcomes, decide what to act/do
+    - ability to build and use mental models to solve new problmes
+    - not relying on just memory
+- what is ai?
+    - getting machines to perform tasks that req human intelligence
+    - build there own understanding of world, act on it
+    - figure it out
 - hardcode intelligence (symbolic ai era)
     - how do we hardcode intelligence?
         - explicitly writing rules that tells machines what to do in every situation
@@ -14,7 +35,7 @@
     - what were drawbacks that lead to ml?
         - rule based dont scale, adapt, generalize, improve over time
         - ambiguity
-        - rules conflicting rules
+        - rules conflicting rules (rules about rules)
         - reality refuses to fit into rules
         - intelligence is not list of rules , it is process of learning from exp
         - stop telling machines what are rules, let them derive rules from data (rules --> patterns)
@@ -169,6 +190,54 @@
         - rnn for sequence / time
         - cnn process parallel
         - rnn process sequentail
+    - why it is harder for nets to understand language over image?
+        - image is spatial
+        - language is sequential and contextual
+        - pixels that matter are physically near to each other
+        - imp words that matter, might be far apart in the sequence, long range dependency
+        - language req remembering and relating info across distances
+    - what are sequence models?
+        - neural net treats every input has independent
+        - but lang, stock price, music; each input depends upon its prev
+        - so, models that are designed to handle data where order and context matter
+        - process one elmt at time, maintain memory(state)
+        - ex. rnn, lstm
+    - does transformer is also part of sequence models?
+        - yes, but use attention instead of recurrent memory
+        - sequence model is not any architecture
+        - any model that handle ordered data, use context
+        - old soln : rnn, lstm, gru; they pass hidden state(that is what i saw in the past)
+        - but this memory fades over long sequence
+        - new soln : attention-based models
+        - look everything at once, decide what matters and connect them directly
+    - why do rnn, lstm, bert and other models fail?
+        - rnn process step by step and carry hidden state(memory : compress info) forward
+        - at longer seq, info loss; forget long term dependencies
+        - in lstm added gates to control memory
+        - but still sequential and recurrence, no full context access
+        - cnn look for local neighborhoods, design for spatial patterns
+        - bert is not fail, it is transformer
+        - understanding but not genrational
+        - bert -> gpt
+        - rnn, lstm, gru all needed a mechnaism that allows direct, global, || interaction betn all elmt of seq
+        - soln is attention
 - attention
-    - model decide where to focus
-    - look back and focus on what matters right now
+    - what is attention?
+        - 
+        - model decide where to focus
+        - look back and focus on what matters right now
+    - why attention is powerful than nueral nets?
+    - model decide where to focus?
+    - look back and focus on what matters right now?
+- transformer
+    - what is transformer?
+    - how chatgpt works?
+    - how models are trainde?
+    - why predicting next word creates understanding?
+    - how reasoning gets emerges in models?
+    - what is foundational models?
+    - what is llm?
+    - what is slm?
+
+--- 
+- [LLM visualization](https://bbycroft.net/llm)
