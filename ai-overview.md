@@ -223,21 +223,79 @@
         - soln is attention
 - attention
     - what is attention?
-        - 
+        - mechanism that let model decide what parts of the input matter right now
         - model decide where to focus
-        - look back and focus on what matters right now
+        - not memory, but selective focus, contextual lookup
+        - mechanism that allows model to dynamically focus on the most relevant parts of the input when producing output
     - why attention is powerful than nueral nets?
-    - model decide where to focus?
-    - look back and focus on what matters right now?
+        - rnn compression loss info
+        - rnn cant decide which info matters right now
+        - attention can selective focus
+        - direct conection, no compression
+        - parallel reasoning and understand relationships
 - transformer
     - what is transformer?
+        - architecture that process entire sequence at once, no recurrence
+        - 2 steps - self attention and feed forward
+        - self attention - decide what to focus on, evry word look at every other word
+        - multiple layers of attention
+        - improved when scale
     - how chatgpt works?
-    - how models are trainde?
+        - gpt predicts the next word/token
+        - to predict, it needs to understand input
+        - predict next word based on prev words has inputs
+        - raw models are trained to complete next word
+        - finetune needed for qa style
+        - rlhf learning, good ans and bad ans test
+        - input -> convert to token -> pass in trans layers -> attention build relation -> layers -> next word predict ; repeat till ans complete
+    - how models are trained?
+        - learning = improving guesses
+        - loss -> how bad predicition is
+        - learning : guess -> measure loss -> reduce loss -> repeat
+        - parameters store what the model has learned; learning is adjusting this numbers
+            - how does numbers stores the learning?
+                - weigths: how strongly one nueron influences another
+                - biases: offset number
+                - parameters = weights + biases (parameter decide how strongly one feature influences another)
+                - learning is finding right transformation
+                - finding right numbers, so that it will lead input into desired output
+                - inshort finding numbers that represents reality
+                - knowledge is not stored in individual neuron but in geometry of parameter space
+                - after training/ updating para billions of time, networks internal geometry becomes a compressed model of reality
+                - structure of relationship
+                - parameters store patterns of transformation
+        - forward propagation for prediction
+        - backward propagation to correct mistakes
+        - input data -> forward pass : prediction -> loss calculation -> backpropagation : assign blame -> gradient descent -> repeat
+        - ai learns the statistical structure of reality encoded in data
     - why predicting next word creates understanding?
+        - "i put the icream in the freezer so that it would not ...."
+        - why memorization dont work
+        - "the purple elephant danced on the keyboard while drinking coffee"
+        - humans dont memorize examples, humans understand language structure
+        - to predict next word/token, model needs to build internal simulation of reality
+        - prediction -> representation -> understanding
+        - compress massive experience/internet into compact internal structure/reality
+        - "If all mammals breathe oxygen, and whales are mammals, then whales breathe ..."
+        - model was not trained to reason, but it had to reason to predict next word
+        - understanding, reasoning is not train directly, it emerges as side effect of prediction
     - how reasoning gets emerges in models?
+        - reasoning - ability to chain ideas logically to reach new conclusions
+        - attention is require; to link distant concepts and relationship
+        - reasoning is compressed simulation
+    - how do hallucinations happen?
+        - confident sounding incorrect/fabricated info
+        - model is design to predict next most likely token, not to verify truth, not to check reality
+        - way to represebt fact is learned by model, how confident language looks, how humans present facts
+        - it has all learned, so it shows confidence while fabricating, leads to false confidence
+        - rag + search reduce hallucinations
+        - models are train to continue, not check reality
+        - for hallucination, input needs to be high pattern simlarity : scientific discovery → physicist → institute → paper → year
     - what is foundational models?
     - what is llm?
     - what is slm?
-
+    - what is diff betn transformer, bert, gpt, llms?
+    - what are other architecture other than transformer?
 --- 
 - [LLM visualization](https://bbycroft.net/llm)
+- attention is all you need (transformer paper)
