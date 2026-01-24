@@ -3,7 +3,6 @@
 - python -m venv myenv
 - myenv\Scripts\activate    
 
-
 ### Variable
 - dynamic typed
 - const
@@ -14,9 +13,7 @@
 - sep= ","
 - map(int, input().split())
 
-
 ### Datatypes
-
 primtive:
 - int
 - str
@@ -36,7 +33,6 @@ Type conversion:
 2. explicit type conversion
 
 ### Mutable & Immutable
-
 mutable:
 - gets change
 - list, dict, set
@@ -49,7 +45,6 @@ immutable:
 - call by value
 - stack (var= actual data)
 
-
 ### Operators
 1. arithmetic: + - * / // %
 2. comparision: ==, >, <, >=, <=, !=
@@ -57,7 +52,6 @@ immutable:
 4. bitwise: & (and), | (or), ~ (not), ^ (xor)
 5. memebership: in , not in
 6. assignment: = , +=, -=, *=, /=, //=
-
 
 ### String
 - stores char
@@ -82,10 +76,8 @@ immutable:
 - .join() --> combine multiple strings into one single string, with a specific separator in between.
 - .swapcase()
 
- 
 ### Data Structures
-
-Lists
+List
 - order and mutable
 - slower than tupple (mutable)
 - hetro elmt
@@ -128,9 +120,7 @@ Dictionaries
 - ternary : value_if_true if condition else value_if_false
 - status = "adult" if age >= 18 else "minor"
 
-
 ### Iterations
-
 - for i in range(start, end, stepsize):   
 - while -> contiue as long condn is true   
 
@@ -145,7 +135,6 @@ b= a[:] --> a is copied in b
 
 1st layer will diff, but 2nd layer is same, shallow copy   
 soln: serialization & deserialization
-
 
 ### Functions
 - block of code that perform specific task, reuse and organise code  

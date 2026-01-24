@@ -1,8 +1,6 @@
 # JavaScript
-
 - https://projects.100xdevs.com/tracks/javascript-1/Javascript-101-2
-
-- browser only understand html, css, js and webassembly (c++/rust <-- wasm)
+- browser only understand html, css, js and webassembly (c++/rust)
 - interpreted: js code -----> runs on machine
   - code runs line by line (chunks)
   - compile at runtime
@@ -20,16 +18,11 @@
 - console.log("text")
 - console.log(`text is here ${var} another text here`)
 - prompt() --> inbrowser
-- process.stdin.setEncoding('utf8'): This line sets the encoding for the standard input to UTF-8. It ensures that the input is treated as a UTF-8 encoded string, which is a common character encoding.
-- process.stdin.on('data', function (input) {: This line sets up an event listener for the 'data' event on the standard input stream. The provided callback function will be executed whenever data is received on the standard input.
-
  
 ## DataTypes
-
 ### Primitive
 - immutable
 - call by value - copy of data, changes are in copy
-
 1. Number
 2. String
 3. Boolean
@@ -45,8 +38,6 @@
 1. Object -> collection of key value pair  { }
 2. Array -> [ ]
 
-
-
 ## Operators
 1. arithmetic: + - * / % **
 2. comparision: < > >= <= == ===(strict check) !=
@@ -54,7 +45,6 @@
 4. bitwise: & | ! ^ (XOR)
 5. assign: =
 6. nullish coalescing: ?? returns RH value when LH is null
-
 
 ## Memory in JS
 - stack(primitive: num, str, bool, null, undefine) -> copy is pass || call by value || immutable
@@ -64,11 +54,8 @@
 - ref variable are stored w/ memory address
 ### Heap
 - actual data is stored and unique memory address is given
-
-
 - primitive -> separte address and ref var
 - non primitive: obj1 ---->  memoy_address <------ obj2; so one change then another also gets change
-
 
 ## String
 - used to hold data that is represented in text form
@@ -92,7 +79,6 @@
 - split(separator, limit)
 - repeat(interval)
 - concat(" ", str2) --> join two str; str1 + str2
-
 
 ## Array
 - used to store multi values in single var
@@ -124,15 +110,12 @@ array.map(callback(element, index, array), thisArg);
 - toSpliced() --> similar to slice, no chnage in og
 - ...names to collect any additional names into an array.
 
-
-
 ## Object
 - collection of key value pair 
 - Objects --> Represent Properties, Methods[Functionalities]
 - Properties -->  Attribute: Color, weight etc.
 - Method -->  Actions, functions
 - Even with const, only the reference is fixed — the contents are still changeable (const obj1 = {})
-
 
 ## Function
 - reusable block of code
@@ -181,7 +164,6 @@ array specific
 - reduce -> array.reduce(callback, initialValue)
 
 ## ES6+
-
 ### Shallow copy & Deep copy
 - shallow copy {...} only copies the top-level of an object
 - spread opt {...a , ...b} --> b will overide a prop
@@ -192,7 +174,7 @@ array specific
 - why -> primitive → copied by value. & object → copied by reference
 - soln --> deep copy (serialization (obj -> str) - deserialization)
 
-## Async 
+### Async 
 - sync code: runs line by line. each operation wait for the prev operation to execute before moving to next
 - I/O operations: input- output opeartions that req, data transfer and waiting time like calls to db, network calls, disks, clocks, external devices
 - fs library (access file system)
@@ -204,12 +186,10 @@ array specific
 
 ### Hoisting
 - mechanism where variable and function declarations are moved to the top of their containing scope during the compilation phase, before the code is executed. However, only the declarations are hoisted—not the initializations.
-
 - var  -> undefined
 - let and const  -> referror (hoist but Temporal dead zone)
 - Block Scope (let and const): Variables declared with let and const are limited to the block where they are defined. Example: Inside a loop or conditional block.
 - Function Scope (var): Variables declared with var are limited to the nearest function. If declared outside any function, they become global variables
-
 
 ### Prototype
 - object from which other objects inherit properties and methods
@@ -221,13 +201,10 @@ array specific
 - proto chaining --> obj2._ proto _ = obj1 
 - eveything is obj in js --> arr.proto.proto = obj , str.proto.proto= obj
 
-
-
 ### Polyfills
 - fallback mechanism
 - custom methods if prototype methods doesn't supported by browser
 - methods like -> .map, .filter, .reduce
-
 
 ### Inner working
 - call stack (execute immediate & clear stack)
@@ -255,53 +232,14 @@ array specific
 - write async code that looks and behave like sync code 
 - syntactic sugar on top of promise
 
-
 ### Lexical Scoping & Closures
 - lexical: the scope of var is detrmine by where it is written, not by where its called from
 - access of var in scope
 - closure fn: fn that has access to the var of its outer fn, even after outer fn has finished execution
 - fn returning fn w/ lexical scope binded
 
-
 ### Destructing
 - pull values from arrays or objects into separate variables
 - in array based on order, obj based on name
 - const colors = ["red", "green", "blue"];
 - const [primary, secondary, tertiary] = colors;
-
-
-## DOM
-- DOM = Document Object Model, represents HTML as objects  
-- Allows JS to read, change, add, or remove elements and content  
-- Access elements:
-  - `getElementById("id")` → single element by ID  
-  - `getElementsByClassName("class")` → HTMLCollection  
-  - `getElementsByTagName("tag")` → HTMLCollection  
-  - `querySelector("selector")` → first match  
-  - `querySelectorAll("selector")` → NodeList of all matches  
-- Modify content:
-  - `element.textContent` → text inside element  
-  - `element.innerHTML` → HTML inside element  
-  - `element.innerText` → visible text  
-- Modify attributes:
-  - `element.setAttribute("attr", "value")`  
-  - `element.getAttribute("attr")`  
-  - `element.removeAttribute("attr")`  
-- Style elements:
-  - `element.style.property = "value"`  
-- Classes:
-  - `element.classList.add("class")`  
-  - `element.classList.remove("class")`  
-  - `element.classList.toggle("class")`  
-- Create & remove elements:
-  - `document.createElement("tag")`  
-  - `parent.appendChild(child)`  
-  - `parent.removeChild(child)`  
-- Events:
-  - `element.addEventListener("event", callback)`  
-  - `onclick`, `onmouseover`, `onchange` as shortcuts  
-- DOM traversal:
-  - `parentNode`, `childNodes`, `firstChild`, `lastChild`, `nextSibling`, `previousSibling`  
-- Forms & inputs:
-  - `input.value` → get/set input value  
-  - Validate or manipulate input dynamically
