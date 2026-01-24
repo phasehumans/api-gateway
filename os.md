@@ -1,0 +1,29 @@
+### Operating System
+
+- what is operating system?
+    - need of manager betn hardware and software
+    - main program that controls the entrire computer and acts has manager betn hardware and user applications
+    - is abstraction layer
+    - process management (cpu control)
+    - memory management (ram control)
+    - file system (disk control)
+    - device management
+    - security and permissions
+- types of os?
+    - 
+- diff betn multiprogramming, multiprocess, multitasking, multithreading?
+- what is process, threads, programs?
+- what are various process states?
+- what are cpu scheduling algo?
+- what is critical section problem?
+- what are process synchronisation?
+- what is deadlock?
+- what are deadlock handling techniques?
+- what is memory management?
+- what is partition and memory allocation?
+- what is virtual memory?
+- what are page replacement algo?
+- what is thrashing?
+- what is segmentation?
+- what is disk management?
+- what are disk scheduling algo?
