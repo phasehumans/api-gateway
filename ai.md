@@ -176,9 +176,35 @@
                 - weight represent how imp is this input
                 - learning is to find correct values of weights
             - what is loss fn?
-                - 
+                - loss = how bad the prediction is
+                - mathmatical fn that measures how far prediction is from correct answer
+                - loss = (actual - predicted)^2 (mse)
+                - square; big mistakes to be punished more
         - layers - abstraction levels
         - parameters - learned knowledge
+    - what is backpropagation?
+        - assign blame
+        - calculates how much each weight contributed to final err, so we know exactly how to update it
+        - forward pass -> inputs  -> output -> loss
+        - backward pass -> loss -> weights
+        - backpropagation computes gradient of loss with respect to every weight
+            - do gradient of loss and gradient descent are same?
+                - gradient of loss is measurment, tells where to go; measurment of steepest slop
+                - descent is algo, that moves weights
+        - propagate err backward and compute gradients
+    - what is learning rate?
+        - knob to control step size
+        - big jump; skip minima
+        - small jump; waste time
+        - determine how much to change weight during each update
+    - what is gradient descent?
+        - prediction is made, loss is caln, blame given to each weight, what next..
+        - need sys method to update weights
+        - way to find steepest downward direction on the loss surface
+        - steepest downward slop is gradient
+        - neg gradient - direction where value decreases fastest
+        - gradient descent is algo that repeatedly moves weights in the direction of steepest decrease of loss
+        - new weight = old weight - learning rate * gradient
     - how does the nueral networks are actually trained?
         - input -> vector of numbers (image - pixel, text - token, audio - wave amplitudes)
         - forward propagation - structured guess
@@ -191,6 +217,27 @@
             - loss is calculated
             - errors flow backward
             - parameters are adjusted
+    - how does the training loop looks like?
+        - forward pass(forward propagation): input -> layers -> output
+        - compute loss: (actual - predicted)
+            - during training llm, how do we calculate loss, do we have all actual answers of every prediction, like every possible questions and its answer?
+                - the end goal of llm is not to give right answer, not to be helpful
+                - goal is just to predict the next token based on previos token
+                - data needed to train is not qa pairs, but large text data
+                - llm is train based on self supervised learning; the data itself generates its own grounded truth
+                - sky is ....; model predicts probabiltites of words (0-1)
+                - loss is caln using cross-entropy loss
+                    - what is cross-entropy loss?
+                        - model predict probabiltiy distribution, not a single number
+                        - how surprised the model is by the correct answer
+                        - penalty for wrong confidence
+                        - loss = -log(probab of correct ans)
+                        - measures how badly the model misunderstands the correct answer
+                - model is not train on qa, but on language itself
+                - qa is emergent behavior, but not trained objective
+        - back propagation: err in backwars, gradient is calculated for each weight
+        - gradiet descent: new weight = oldweight - learning rate * gradient
+        - repeat
     - what is rnn?
         - invented to give nueral networks memory
         - nn that passes info from one step to next, so it can remember the past
@@ -209,7 +256,7 @@
     - what are limitations of rnn?
         - weak long term memory
         - training is slow
-        - attention is better
+        - attention is better than rnn
     - diff betn cnn and rnn?
         - cnn for image / space
         - rnn for sequence / time
