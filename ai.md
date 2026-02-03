@@ -47,18 +47,34 @@
         - learning lives in model
         - find mistakes through loss (error) and adjust parameters
         - ml dont try to be perfect, it try to be less wrong over time
-    - types and examples of machine learning algorithms?
+    - what are types and examples of machine learning algorithms?
         - supervised learning - learn with answers/output
             - learning a mapping from input to output using labled(input + corrrect answer attach) examples
             - classification -> put into right bucket
                 - ex. spam/notspam, fraud/notfraud, cat/dog
                 - draw boundries using past examples
                 - knn
+                    - redicts a label by looking at the K most similar past examples
+                    - choosing the majority label among them
+                    - K most similar past points, then vote
+                    - ex. customer segmentation
                 - logistic regression
+                    - predicts straight line and pass through squashing curve (sigmoid fn)
+                    - sigmoid converts any number into 0 or 1
+                    - ex. email spam, loan approval
                 - naive bayes
+                    - uses probabilities of features (like words) to decide the most likely class
+                    - assuming feat are independent
+                    - ex. sentiment analysis
                 - decision tree
+                    - classifies data by asking a sequence of conditional questions
+                    - branching the decision
                 - random forest
+                    - mutli decision trees
                 - svm (support vector machine)
+                    - finds a line (or surface) that separates classes with the maximum possible margin
+                    - nearest points are support vectors
+                    - ocusing mainly on the closest pts
             - regression -> predict a number
                 - house price prediction, delivery time predicition
                 - fn that map input ---> numbers
@@ -66,11 +82,27 @@
                     - goal is to find best straight line, close has possible to most pts
                     - caln rate of change; that is slope
                     - y = mx+b
+                    - ex. house and temprature prediction
                 - polynomial regression
+                    - straight line is too simple to capture real pattern in data
+                    - capture curves by adding power of x
+                    - y = ax² + bx + c
+                    - ex. speed of car, ads spend
                 - knn regression
+                    - knn: look at nearest similar examples and average them
+                    - predicts avg of k past examples
+                    - ex. recommendation sys, local weather prediction
                 - decision tree regression
+                    - decision tree: tree of questions that leads to final decision
+                    - prediction by asking seq of que
+                    - ex. loan approval
                 - random forest regression
+                    - many decision tress working together to predict
+                    - avg of all trees
+                    - ex. enegy consumption prediction, car price prediction
                 - svr (support vector regression)
+                    - fits a function that stays within an acceptable error margin around the data
+                    - focusing only on the most important boundary points instead of every data point
             - cant discover unknown patterns
             - need label data (expensive)
         - unsupervised learning - learns without answers
@@ -79,10 +111,21 @@
             - clustering -> discover grouping
                 - grouping similar datapoints together w/o knowing groups in advance
                 - k-means
+                    - groups similar data points into K clusters
+                    - centroid is avg position of all pnts in that group
                 - hierarchical clustering (agglomerative and divisive)
+                    - nested structure of groups inside groups; tree of clusters
+                    - tree of nested clusters by repeatedly merging (or splitting) groups based on similarity
+                    - agglo - each pts has cluster; bottom-up
+                    - divisive - all pts has one big cluster; top-down
+                    - ex. species classfifcation, image grouping
                 - dbscan
-                - mean shift
-                - gausssian mixture models
+                    - clusters based on how densely packed points
+                    - groups of closely packed points and labels isolated points as noise
+                    - no need of k
+                    - epsilon - radius
+                    - minpts - min points
+                    - ex. astro data, fraud detection
             - dimensionality reduction -> simplify complex data w/o losing meaning
                 - represnt high dimension data into fewer and meaningful dimension
                 - pca (principal component analysis)
@@ -398,6 +441,8 @@
     - what is foundational models?
         - general purpose intelligence
         - general representation of reality
+    - what is reasoning, how do models reason?
+        - 
     - what is llm?
         - large language model
         - large number of parameters - billion to trillion
