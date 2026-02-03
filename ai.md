@@ -38,11 +38,11 @@
         - rules conflicting rules (rules about rules)
         - reality refuses to fit into rules
         - intelligence is not list of rules , it is process of learning from exp
-        - stop telling machines what are rules, let them derive rules from data (rules --> patterns)
+        - stop telling machines what are rules, let them derive rules from data (rules --> patterns) >> machine learning
 - machine learning
     - what is machine learning?
         - way to make computers learn patterns from data
-        - itelligence = patterns discovery + generalization
+        - intelligence = patterns discovery + generalization
         - adjust numbers (paramters) based on mistakes
         - learning lives in model
         - find mistakes through loss (error) and adjust parameters
@@ -51,7 +51,7 @@
         - supervised learning - learn with answers/output
             - learning a mapping from input to output using labled(input + corrrect answer attach) examples
             - classification -> put into right bucket
-                - spam/notspam, fraud/notfraud, cat/dog
+                - ex. spam/notspam, fraud/notfraud, cat/dog
                 - draw boundries using past examples
                 - knn
                 - logistic regression
@@ -63,13 +63,16 @@
                 - house price prediction, delivery time predicition
                 - fn that map input ---> numbers
                 - linear regression
+                    - goal is to find best straight line, close has possible to most pts
+                    - caln rate of change; that is slope
+                    - y = mx+b
                 - polynomial regression
                 - knn regression
                 - decision tree regression
                 - random forest regression
                 - svr (support vector regression)
             - cant discover unknown patterns
-            -need label data (expensive)
+            - need label data (expensive)
         - unsupervised learning - learns without answers
             - learning w/o label
             - explore data itself and discover structure, patterns
@@ -305,6 +308,35 @@
         - attention can selective focus
         - direct conection, no compression
         - parallel reasoning and understand relationships
+    - what is tokenization?
+        - process of breaking text into small tokens
+        - tokens are converted into numbers (token ids)
+        - sentence -> tokens -> token ids -> embeddings -> model process them
+        - what are methods of tokenization?
+            - character tokenization
+            - word tokenization
+            - subword tokenization
+                - byte pair encoding
+                - wordpiece
+            - sentence tokenization
+            - ref.[tiktoken](https://tiktokenizer.vercel.app/) and [openai tokenizer](https://platform.openai.com/tokenizer)
+    - what is embeddings?
+        - embedding is vector that represents the meaning of word
+        - "king" → 1432   (token ID)
+        - "king" → [0.21, -1.34, 0.87, 0.55, ..., 1.02]   (embedding)
+            - how are this values of embedding decide, are they random, who decide them?
+                - start w/ random
+                - later updated in training has model understand language and relationship
+        - if two words have similar meaning, their vectors will be closer in space
+        - ref [embedding graph](https://projector.tensorflow.org/)
+    - what is positional embeddings? why just word embeddings are not enough?
+        - embeddings only tell what the words are, not where they are in sentence
+        - “Dog bites man.” and “Man bites dog.” have same embeddings; have derive meaning
+        - need to tell position of each word
+        - final input = word embedding + positional embedding
+        - types of positional embeddings:
+            - learned positional embeddings; let model learn
+            - sinusoidal positional embeddings; generate via sin-cosine waves
 - transformer
     - what is transformer?
         - architecture that process entire sequence at once, no recurrence
