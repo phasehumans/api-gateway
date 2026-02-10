@@ -380,7 +380,6 @@
         - types of positional embeddings:
             - learned positional embeddings; let model learn
             - sinusoidal positional embeddings; generate via sin-cosine waves
-- transformer
     - what is transformer?
         - architecture that process entire sequence at once, no recurrence
         - 2 steps - self attention and feed forward
@@ -395,6 +394,36 @@
         - finetune needed for qa style
         - rlhf learning, good ans and bad ans test
         - input -> convert to token -> pass in trans layers -> attention build relation -> layers -> next word predict ; repeat till ans complete
+    - what is self attention?
+        - rnn, lstm reads words one by one; but language depends on relationships betn words
+        - need mechanism that let each word to look at every other word; -> self attention
+        - each word look at other words and ask : "how important is this other word to understanding me?"
+    - what is QKV (query, key and value)?
+        - query - what am i looking for
+        - key - what do i contain
+        - value - what info do i offer
+        - words > tokens > embedding > QKV
+        - attention score = dot product of Q and K
+        - softmax and then normalise; get attention weights
+        - new word = new(drank) = 0.28 * V(I) +0.36 * V(drank) + 0.36 * V(water)
+        - for each word in ||
+        - Q matches K to decide who matters
+        - V provides what knowledge to take
+        - so every words become context aware
+    - what is attention formula?
+        - Attention(Q, K, V) = Softmax(QK^T/ √d k ) V
+        - QKT= raw attention scores
+        - √d k for normalisation
+        - softmax to convert into probab, make them sum to 1 in each row
+        - x V to borrows meaning; take information from other words in proportion to attention weights
+    - why we do kv cache?
+        - k and v never change
+        - store the k and v vectors of all preciously processed token in memory and reuse them, instead of recompute
+    - what is multi-head attention?
+        - language has many relationships
+        - one attention only look at one thing at a time
+        - instead of one attention mechanism, create several attention head in ||
+        - each head learns to focus on a diff aspect of sentence / relationship
     - how models are trained?
         - learning = improving guesses
         - loss -> how bad predicition is
