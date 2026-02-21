@@ -1,4 +1,4 @@
-### Artificial Intelligence
+## Artificial Intelligence
 
 - what does it mean to learn?
     - building accuarate mental model to understand, predict and use
@@ -22,478 +22,487 @@
     - getting machines to perform tasks that req human intelligence
     - build there own understanding of world, act on it
     - figure it out
-- hardcode intelligence (symbolic ai era)
-    - how do we hardcode intelligence?
-        - explicitly writing rules that tells machines what to do in every situation
-        - if and then
-        - rule based : encode expert knowledge
-    - examples of rule based systems?
-        - early chess engines
-        - spam filters before ml
-        - eliza chatbot
-        - npc's in games
-    - what were drawbacks that lead to ml?
-        - rule based dont scale, adapt, generalize, improve over time
-        - ambiguity
-        - rules conflicting rules (rules about rules)
-        - reality refuses to fit into rules
-        - intelligence is not list of rules , it is process of learning from exp
-        - stop telling machines what are rules, let them derive rules from data (rules --> patterns) >> machine learning
-- machine learning
-    - what is machine learning?
-        - way to make computers learn patterns from data
-        - intelligence = patterns discovery + generalization
-        - adjust numbers (paramters) based on mistakes
-        - learning lives in model
-        - find mistakes through loss (error) and adjust parameters
-        - ml dont try to be perfect, it try to be less wrong over time
-    - what are types and examples of machine learning algorithms?
-        - supervised learning - learn with answers/output
-            - learning a mapping from input to output using labled(input + corrrect answer attach) examples
-            - classification -> put into right bucket
-                - ex. spam/notspam, fraud/notfraud, cat/dog
-                - draw boundries using past examples
-                - knn
-                    - predicts a label by looking at the K most similar past examples
-                    - choosing the majority label among them
-                    - K most similar past points, then vote
-                    - ex. customer segmentation
-                - logistic regression
-                    - predicts straight line and pass through squashing curve (sigmoid fn)
-                    - sigmoid converts any number into 0 or 1
-                    - ex. email spam, loan approval
-                - naive bayes
-                    - uses probabilities of features (like words) to decide the most likely class
-                    - assuming feat are independent
-                    - ex. sentiment analysis
-                - decision tree
-                    - classifies data by asking a sequence of conditional questions
-                    - branching the decision
-                - random forest
-                    - mutli decision trees
-                - svm (support vector machine)
-                    - finds a line (or surface) that separates classes with the maximum possible margin
-                    - nearest points are support vectors
-                    - ocusing mainly on the closest pts
-            - regression -> predict a number
-                - house price prediction, delivery time predicition
-                - fn that map input ---> numbers
-                - linear regression
-                    - goal is to find best straight line, close has possible to most pts
-                    - caln rate of change; that is slope
-                    - y = mx+b
-                    - ex. house and temprature prediction
-                - polynomial regression
-                    - straight line is too simple to capture real pattern in data
-                    - capture curves by adding power of x
-                    - y = ax² + bx + c
-                    - ex. speed of car, ads spend
-                - knn regression
-                    - knn: look at nearest similar examples and average them
-                    - predicts avg of k past examples
-                    - ex. recommendation sys, local weather prediction
-                - decision tree regression
-                    - decision tree: tree of questions that leads to final decision
-                    - prediction by asking seq of que
-                    - ex. loan approval
-                - random forest regression
-                    - many decision tress working together to predict
-                    - avg of all trees
-                    - ex. enegy consumption prediction, car price prediction
-                - svr (support vector regression)
-                    - fits a function that stays within an acceptable error margin around the data
-                    - focusing only on the most important boundary points instead of every data point
-            - cant discover unknown patterns
-            - need label data (expensive)
-        - unsupervised learning - learns without answers
-            - learning w/o label
-            - explore data itself and discover structure, patterns
-            - clustering -> discover grouping
-                - grouping similar datapoints together w/o knowing groups in advance
-                - k-means
-                    - groups similar data points into K clusters
-                    - centroid is avg position of all pnts in that group
-                - hierarchical clustering (agglomerative and divisive)
-                    - nested structure of groups inside groups; tree of clusters
-                    - tree of nested clusters by repeatedly merging (or splitting) groups based on similarity
-                    - agglo - each pts has cluster; bottom-up
-                    - divisive - all pts has one big cluster; top-down
-                    - ex. species classfifcation, image grouping
-                - dbscan
-                    - clusters based on how densely packed points
-                    - groups of closely packed points and labels isolated points as noise
-                    - no need of k
-                    - epsilon - radius
-                    - minpts - min points
-                    - ex. astro data, fraud detection
-            - dimensionality reduction -> simplify complex data w/o losing meaning
-                - represnt high dimension data into fewer and meaningful dimension
-                - pca (principal component analysis)
-                - t-sne
-                - umap
-                - autoencoders
-            - anomaly detection -> spot unusual
-                - far from avg
-                - far from neighbors
-                - sparse density
-                - tiny clusters
-                - isolation forest
-        - reinforcement learning - learn from reward and punishment
-            - learn by doing, not by being told
-            - learn from consequences, not answers
-            - agent, env, state, action, reward
-            - value based methods -> how good is this situation
-                - q-learning
-            - policy based methods -> what should i do |state --> action|
-            - actor-crictic methods -> one act, one judge
-            - model based rl -> think before act
-            - rl rewards are sparse
-            - training is unstable
-            - not prediction, but control
-        - semi-supervised learning - little guidance, a lot of exploration (few labels + lot of data)
-        - self-supervised learning - learning by creating own tasks (predict missing info) --> base of llms
-    - what are important concepts in ml?
-        - data
-        - features - measurements, properties, signals
-        - parameters - internal numbers inside model that store what model has learned from data
-        - model - fn w/ parameters
-        - loss fn - distance betn prediction and reality
-        - learning - reducing loss fn
-        - optimization - process of adjust model (fn w/ para)
-        - generalization - performace on unseen data
-        - overfitting - memorized noise
-        - underfitting - didn't learn enough
-        - bias - simplicity
-        - variance - sensitivity
-        - evaluation metrics - accuracy, precision, recall
-        - hyperparameters -  controllers for learning rate
-        - assumptions - hidden beliefs
-    - fundamental diff betn ml and dl?
-        - feature engineering - tell model what to look for
-        - ml cant learn good representation by itself
-        - in dl, models auto learn hierarchical features from raw data using layers
-        - ml : input + feat-eng --> output
-        - dl : input --->  layer | layer | layer | layer | ...| layers | ---> output
-    - what are fundamentals of ml that are carry forward to dl and transformers?
-        - core of ml -> guess > measure error > adjust > repeat
-        - representation
-        - model is still fn with parameters
-            - what are parameters?
-                - numbers that represent learning
-                - learned numbers / memory of models
-                - weight
-                - bias
-        - loss fn; goal is to reduce loss
-        - optimization
-        - generalization
-    - what drawbacks of ml that leads to neural networks?
-        - classical ml cant learn representations by itself
-        - real world data is non-linear and complex
-        - cant represent hierarchical concepts
-        - manual feat eng
-        - cant learn representation
-        - neural networks for representation learning
-- deep learning
-    - what are neural networks?
-        - learns by applying many small transformations in sequence, where is each transformations builds on prev one
-        - to build models, that can learn in layers
-        - neurons - tiny pattern detectors
-            - what is neuron?
-                - also called perceptron
-                - mathematical fn
-                - output = activation(weighted sum of inputs: w1x1 + w2x2 ... + bias)
-                    - what is bias, why do we add bias?
-                        - bias is default tendency, from where to start
-                        - w/o bias, restrict learning
-                        - gives neuron freedom to activate even when inputs are zero
-                - tiny decision making unit that learns how imp each input should be
-                - neuron has inputs, weights, activation fn
-            - what is activation fn?
-                - w/o activation fn, we face linearity problem
-                - reality is non-linear and complex
-                - fn decide how much a neuron should activate based on its input
-                - controls the fire rate, decide how much to react
-                - examples of activation fn
-                    - sigmoid (0 to 1)
-                    - tanh (-1 to 1)
-                    - relu (max(x,0))
-                    - gelu and swish
-            - what is weights?
-                - weight represent how imp is this input
-                - learning is to find correct values of weights
-            - what is loss fn?
-                - loss = how bad the prediction is
-                - mathmatical fn that measures how far prediction is from correct answer
-                - loss = (actual - predicted)^2 (mse)
-                - square; big mistakes to be punished more
-        - layers - abstraction levels
-        - parameters - learned knowledge
-    - what is backpropagation?
-        - assign blame
-        - calculates how much each weight contributed to final err, so we know exactly how to update it
-        - forward pass -> inputs  -> output -> loss
-        - backward pass -> loss -> weights
-        - backpropagation computes gradient of loss with respect to every weight
-            - do gradient of loss and gradient descent are same?
-                - gradient of loss is measurment, tells where to go; measurment of steepest slop
-                - descent is algo, that moves weights
-        - propagate err backward and compute gradients
-    - what is learning rate?
-        - knob to control step size
-        - big jump; skip minima
-        - small jump; waste time
-        - determine how much to change weight during each update
-    - what is gradient descent?
-        - prediction is made, loss is caln, blame given to each weight, what next..
-        - need sys method to update weights
-        - way to find steepest downward direction on the loss surface
-        - steepest downward slop is gradient
-        - neg gradient - direction where value decreases fastest
-        - gradient descent is algo that repeatedly moves weights in the direction of steepest decrease of loss
-        - new weight = old weight - learning rate * gradient
-    - how does the nueral networks are actually trained?
-        - input -> vector of numbers (image - pixel, text - token, audio - wave amplitudes)
-        - forward propagation - structured guess
-        - back propagation - traces responsibility backward and assigns blame proportionally
-        - parameters are updated to reduce loss
-        - networks dont understand concepts, it reacts to patterns
-        - loop:
-            - inputs go forward
-            - network predicts output
-            - loss is calculated
-            - errors flow backward
-            - parameters are adjusted
-    - how does the training loop looks like?
-        - forward pass(forward propagation): input -> layers -> output
-        - compute loss: (actual - predicted)
-            - during training llm, how do we calculate loss, do we have all actual answers of every prediction, like every possible questions and its answer?
-                - the end goal of llm is not to give right answer, not to be helpful
-                - goal is just to predict the next token based on previos token
-                - data needed to train is not qa pairs, but large text data
-                - llm is train based on self supervised learning; the data itself generates its own grounded truth
-                - sky is ....; model predicts probabiltites of words (0-1)
-                - loss is caln using cross-entropy loss
-                    - what is cross-entropy loss?
-                        - model predict probabiltiy distribution, not a single number
-                        - how surprised the model is by the correct answer
-                        - penalty for wrong confidence
-                        - loss = -log(probab of correct ans)
-                        - measures how badly the model misunderstands the correct answer
-                - model is not train on qa, but on language itself
-                - qa is emergent behavior, but not trained objective
-        - back propagation: err in backwars, gradient is calculated for each weight
-        - gradiet descent: new weight = oldweight - learning rate * gradient
-        - repeat
-    - what is rnn?
-        - invented to give nueral networks memory
-        - nn that passes info from one step to next, so it can remember the past
-        - hidden state is memory of nn
-        - hidden state is vector of numbers, that summarizes everything seen so far
-        - rnn memory is fragile and slow
-    - how rnn is different from nueral network?
-        - rnn is neural network
-        - normal nn has no memory, treats each input independently
-        - rnn feeds its previos output back into itself
-        - nn : input --> |layers| --> output
-        - rnn : input --> memory1 ; input + memory1 ---> memory2 ; ....
-    - examples of rnn?
-        - predictive keyboards
-        - early google translation
-    - what are limitations of rnn?
-        - weak long term memory
-        - training is slow
-        - attention is better than rnn
-    - diff betn cnn and rnn?
-        - cnn for image / space
-        - rnn for sequence / time
-        - cnn process parallel
-        - rnn process sequentail
-    - why it is harder for nets to understand language over image?
-        - image is spatial
-        - language is sequential and contextual
-        - pixels that matter are physically near to each other
-        - imp words that matter, might be far apart in the sequence, long range dependency
-        - language req remembering and relating info across distances
-    - what are sequence models?
-        - neural net treats every input has independent
-        - but lang, stock price, music; each input depends upon its prev
-        - so, models that are designed to handle data where order and context matter
-        - process one elmt at time, maintain memory(state)
-        - ex. rnn, lstm
-    - does transformer is also part of sequence models?
-        - yes, but use attention instead of recurrent memory
-        - sequence model is not any architecture
-        - any model that handle ordered data, use context
-        - old soln : rnn, lstm, gru; they pass hidden state(that is what i saw in the past)
-        - but this memory fades over long sequence
-        - new soln : attention-based models
-        - look everything at once, decide what matters and connect them directly
-    - why do rnn, lstm, bert and other models fail?
-        - rnn process step by step and carry hidden state(memory : compress info) forward
-        - at longer seq, info loss; forget long term dependencies
-        - in lstm added gates to control memory
-        - but still sequential and recurrence, no full context access
-        - cnn look for local neighborhoods, design for spatial patterns
-        - bert is not fail, it is transformer
-        - understanding but not genrational
-        - bert -> gpt
-        - rnn, lstm, gru all needed a mechnaism that allows direct, global, || interaction betn all elmt of seq
-        - soln is attention
-- large language models
-    - what is attention?
-        - mechanism that let model decide what parts of the input matter right now
-        - model decide where to focus
-        - not memory, but selective focus, contextual lookup
-        - mechanism that allows model to dynamically focus on the most relevant parts of the input when producing output
-    - why attention is powerful than nueral nets?
-        - rnn compression loss info
-        - rnn cant decide which info matters right now
-        - attention can selective focus
-        - direct conection, no compression
-        - parallel reasoning and understand relationships
-    - what is tokenization?
-        - process of breaking text into small tokens
-        - tokens are converted into numbers (token ids)
-        - sentence -> tokens -> token ids -> embeddings -> model process them
-        - what are methods of tokenization?
-            - character tokenization
-            - word tokenization
-            - subword tokenization
-                - byte pair encoding
-                - wordpiece
-            - sentence tokenization
-            - ref.[tiktoken](https://tiktokenizer.vercel.app/) and [openai tokenizer](https://platform.openai.com/tokenizer)
-    - what is embeddings?
-        - embedding is vector that represents the meaning of word
-        - "king" → 1432   (token ID)
-        - "king" → [0.21, -1.34, 0.87, 0.55, ..., 1.02]   (embedding)
-            - how are this values of embedding decide, are they random, who decide them?
-                - start w/ random
-                - later updated in training has model understand language and relationship
-        - if two words have similar meaning, their vectors will be closer in space
-        - ref [embedding graph](https://projector.tensorflow.org/)
-    - what is positional embeddings? why just word embeddings are not enough?
-        - embeddings only tell what the words are, not where they are in sentence
-        - “Dog bites man.” and “Man bites dog.” have same embeddings; have derive meaning
-        - need to tell position of each word
-        - final input = word embedding + positional embedding
-        - types of positional embeddings:
-            - learned positional embeddings; let model learn
-            - sinusoidal positional embeddings; generate via sin-cosine waves
-    - what is transformer?
-        - architecture that process entire sequence at once, no recurrence
-        - 2 steps - self attention and feed forward
-        - self attention - decide what to focus on, evry word look at every other word
-        - multiple layers of attention
-        - improved when scale
-    - how chatgpt works?
-        - gpt predicts the next word/token
-        - to predict, it needs to understand input
-        - predict next word based on prev words has inputs
-        - raw models are trained to complete next word
-        - finetune needed for qa style
-        - rlhf learning, good ans and bad ans test
-        - input -> convert to token -> pass in trans layers -> attention build relation -> layers -> next word predict ; repeat till ans complete
-    - what is self attention?
-        - rnn, lstm reads words one by one; but language depends on relationships betn words
-        - need mechanism that let each word to look at every other word; -> self attention
-        - each word look at other words and ask : "how important is this other word to understanding me?"
-    - what is QKV (query, key and value)?
-        - query - what am i looking for
-        - key - what do i contain
-        - value - what info do i offer
-        - words > tokens > embedding > QKV
-        - attention score = dot product of Q and K
-        - softmax and then normalise; get attention weights
-        - new word = new(drank) = 0.28 * V(I) +0.36 * V(drank) + 0.36 * V(water)
-        - for each word in ||
-        - Q matches K to decide who matters
-        - V provides what knowledge to take
-        - so every words become context aware
-    - what is attention formula?
-        - Attention(Q, K, V) = Softmax(QK^T/ √d k ) V
-        - QKT= raw attention scores
-        - √d k for normalisation
-        - softmax to convert into probab, make them sum to 1 in each row
-        - x V to borrows meaning; take information from other words in proportion to attention weights
-    - why we do kv cache?
-        - k and v never change
-        - store the k and v vectors of all preciously processed token in memory and reuse them, instead of recompute
-    - what is multi-head attention?
-        - language has many relationships
-        - one attention only look at one thing at a time
-        - instead of one attention mechanism, create several attention head in ||
-        - each head learns to focus on a diff aspect of sentence / relationship
-    - how models are trained?
-        - learning = improving guesses
-        - loss -> how bad predicition is
-        - learning : guess -> measure loss -> reduce loss -> repeat
-        - parameters store what the model has learned; learning is adjusting this numbers
-            - how does numbers stores the learning?
-                - weigths: how strongly one nueron influences another
-                - biases: offset number
-                - parameters = weights + biases (parameter decide how strongly one feature influences another)
-                - learning is finding right transformation
-                - finding right numbers, so that it will lead input into desired output
-                - inshort finding numbers that represents reality
-                - knowledge is not stored in individual neuron but in geometry of parameter space
-                - after training/ updating para billions of time, networks internal geometry becomes a compressed model of reality
-                - structure of relationship
-                - parameters store patterns of transformation
-        - forward propagation for prediction
-        - backward propagation to correct mistakes
-        - input data -> forward pass : prediction -> loss calculation -> backpropagation : assign blame -> gradient descent -> repeat
-        - ai learns the statistical structure of reality encoded in data
-    - why predicting next word creates understanding?
-        - "i put the icream in the freezer so that it would not ...."
-        - why memorization dont work
-        - "the purple elephant danced on the keyboard while drinking coffee"
-        - humans dont memorize examples, humans understand language structure
-        - to predict next word/token, model needs to build internal simulation of reality
-        - prediction -> representation -> understanding
-        - compress massive experience/internet into compact internal structure/reality
-        - "If all mammals breathe oxygen, and whales are mammals, then whales breathe ..."
-        - model was not trained to reason, but it had to reason to predict next word
-        - understanding, reasoning is not train directly, it emerges as side effect of prediction
-    - how reasoning gets emerges in models?
-        - reasoning - ability to chain ideas logically to reach new conclusions
-        - attention is require; to link distant concepts and relationship
-        - reasoning is compressed simulation
-    - how do hallucinations happen?
-        - confident sounding incorrect/fabricated info
-        - model is design to predict next most likely token, not to verify truth, not to check reality
-        - way to represebt fact is learned by model, how confident language looks, how humans present facts
-        - it has all learned, so it shows confidence while fabricating, leads to false confidence
-        - rag + search reduce hallucinations
-        - models are train to continue, not check reality
-        - for hallucination, input needs to be high pattern simlarity : scientific discovery → physicist → institute → paper → year
-    - what is foundational models?
-        - general purpose intelligence
-        - general representation of reality
-    - what is reasoning, how do models reason?
-        - 
-    - what is llm?
-        - large language model
-        - large number of parameters - billion to trillion
-        - [LLM visualization](https://bbycroft.net/llm)
-        - gpt4, claude, gemini
-    - what is slm?
-        - small language model
-        - smaller number of parameters - million
-        - phi-2, mistral7b, distilBERT
-    - what are other architecture than transformer?
-        - feedforward neural networks (fnn)
-        - convolutional neural networks (cnn)
-        - recurrent neural networks (rnn)
-        - long short term memory (lstm)
-        - gated recurrent unit (gru)
-        - graph neural networks (gnn)
-        - capsule networks
-        - autoencoders
-        - diffusion models
-        - state space models(ssm) - s4, mamba, rwkv -> o(n)
-        - neural turing machines - nets + ram
-        - modular neural nets
-        - world model architectures - deepminde mu0, dreamer, gato
-        - agent architectures - autogpt, react, tree of thoughts
-- Applied AI
+
+
+### Hardcoded Intelligence
+- how do we hardcode intelligence?
+    - explicitly writing rules that tells machines what to do in every situation
+    - if and then
+    - rule based : encode expert knowledge
+- examples of rule based systems?
+    - early chess engines
+    - spam filters before ml
+    - eliza chatbot
+    - npc's in games
+- what were drawbacks that lead to ml?
+    - rule based dont scale, adapt, generalize, improve over time
+    - ambiguity
+    - rules conflicting rules (rules about rules)
+    - reality refuses to fit into rules
+    - intelligence is not list of rules , it is process of learning from exp
+    - stop telling machines what are rules, let them derive rules from data (rules --> patterns) >> machine learning
+
+
+### Machine Learning
+- what is machine learning?
+    - way to make computers learn patterns from data
+    - intelligence = patterns discovery + generalization
+    - adjust numbers (paramters) based on mistakes
+    - learning lives in model
+    - find mistakes through loss (error) and adjust parameters
+    - ml dont try to be perfect, it try to be less wrong over time
+- what are types and examples of machine learning algorithms?
+    - supervised learning - learn with answers/output
+        - learning a mapping from input to output using labled(input + corrrect answer attach) examples
+        - classification -> put into right bucket
+            - ex. spam/notspam, fraud/notfraud, cat/dog
+            - draw boundries using past examples
+            - knn
+                - predicts a label by looking at the K most similar past examples
+                - choosing the majority label among them
+                - K most similar past points, then vote
+                - ex. customer segmentation
+            - logistic regression
+                - predicts straight line and pass through squashing curve (sigmoid fn)
+                - sigmoid converts any number into 0 or 1
+                - ex. email spam, loan approval
+            - naive bayes
+                - uses probabilities of features (like words) to decide the most likely class
+                - assuming feat are independent
+                - ex. sentiment analysis
+            - decision tree
+                - classifies data by asking a sequence of conditional questions
+                - branching the decision
+            - random forest
+                - mutli decision trees
+            - svm (support vector machine)
+                - finds a line (or surface) that separates classes with the maximum possible margin
+                - nearest points are support vectors
+                - ocusing mainly on the closest pts
+        - regression -> predict a number
+            - house price prediction, delivery time predicition
+            - fn that map input ---> numbers
+            - linear regression
+                - goal is to find best straight line, close has possible to most pts
+                - caln rate of change; that is slope
+                - y = mx+b
+                - ex. house and temprature prediction
+            - polynomial regression
+                - straight line is too simple to capture real pattern in data
+                - capture curves by adding power of x
+                - y = ax² + bx + c
+                - ex. speed of car, ads spend
+            - knn regression
+                - knn: look at nearest similar examples and average them
+                - predicts avg of k past examples
+                - ex. recommendation sys, local weather prediction
+            - decision tree regression
+                - decision tree: tree of questions that leads to final decision
+                - prediction by asking seq of que
+                - ex. loan approval
+            - random forest regression
+                - many decision tress working together to predict
+                - avg of all trees
+                - ex. enegy consumption prediction, car price prediction
+            - svr (support vector regression)
+                - fits a function that stays within an acceptable error margin around the data
+                - focusing only on the most important boundary points instead of every data point
+        - cant discover unknown patterns
+        - need label data (expensive)
+    - unsupervised learning - learns without answers
+        - learning w/o label
+        - explore data itself and discover structure, patterns
+        - clustering -> discover grouping
+            - grouping similar datapoints together w/o knowing groups in advance
+            - k-means
+                - groups similar data points into K clusters
+                - centroid is avg position of all pnts in that group
+            - hierarchical clustering (agglomerative and divisive)
+                - nested structure of groups inside groups; tree of clusters
+                - tree of nested clusters by repeatedly merging (or splitting) groups based on similarity
+                - agglo - each pts has cluster; bottom-up
+                - divisive - all pts has one big cluster; top-down
+                - ex. species classfifcation, image grouping
+            - dbscan
+                - clusters based on how densely packed points
+                - groups of closely packed points and labels isolated points as noise
+                - no need of k
+                - epsilon - radius
+                - minpts - min points
+                - ex. astro data, fraud detection
+        - dimensionality reduction -> simplify complex data w/o losing meaning
+            - represnt high dimension data into fewer and meaningful dimension
+            - pca (principal component analysis)
+            - t-sne
+            - umap
+            - autoencoders
+        - anomaly detection -> spot unusual
+            - far from avg
+            - far from neighbors
+            - sparse density
+            - tiny clusters
+            - isolation forest
+    - reinforcement learning - learn from reward and punishment
+        - learn by doing, not by being told
+        - learn from consequences, not answers
+        - agent, env, state, action, reward
+        - value based methods -> how good is this situation
+            - q-learning
+        - policy based methods -> what should i do |state --> action|
+        - actor-crictic methods -> one act, one judge
+        - model based rl -> think before act
+        - rl rewards are sparse
+        - training is unstable
+        - not prediction, but control
+    - semi-supervised learning - little guidance, a lot of exploration (few labels + lot of data)
+    - self-supervised learning - learning by creating own tasks (predict missing info) --> base of llms
+- what are important concepts in ml?
+    - data
+    - features - measurements, properties, signals
+    - parameters - internal numbers inside model that store what model has learned from data
+    - model - fn w/ parameters
+    - loss fn - distance betn prediction and reality
+    - learning - reducing loss fn
+    - optimization - process of adjust model (fn w/ para)
+    - generalization - performace on unseen data
+    - overfitting - memorized noise
+    - underfitting - didn't learn enough
+    - bias - simplicity
+    - variance - sensitivity
+    - evaluation metrics - accuracy, precision, recall
+    - hyperparameters -  controllers for learning rate
+    - assumptions - hidden beliefs
+- fundamental diff betn ml and dl?
+    - feature engineering - tell model what to look for
+    - ml cant learn good representation by itself
+    - in dl, models auto learn hierarchical features from raw data using layers
+    - ml : input + feat-eng --> output
+    - dl : input --->  layer | layer | layer | layer | ...| layers | ---> output
+- what are fundamentals of ml that are carry forward to dl and transformers?
+    - core of ml -> guess > measure error > adjust > repeat
+    - representation
+    - model is still fn with parameters
+        - what are parameters?
+            - numbers that represent learning
+            - learned numbers / memory of models
+            - weight
+            - bias
+    - loss fn; goal is to reduce loss
+    - optimization
+    - generalization
+- what drawbacks of ml that leads to neural networks?
+    - classical ml cant learn representations by itself
+    - real world data is non-linear and complex
+    - cant represent hierarchical concepts
+    - manual feat eng
+    - cant learn representation
+    - neural networks for representation learning
+
+
+### Deep Learning
+- what are neural networks?
+    - learns by applying many small transformations in sequence, where is each transformations builds on prev one
+    - to build models, that can learn in layers
+    - neurons - tiny pattern detectors
+        - what is neuron?
+            - also called perceptron
+            - mathematical fn
+            - output = activation(weighted sum of inputs: w1x1 + w2x2 ... + bias)
+                - what is bias, why do we add bias?
+                    - bias is default tendency, from where to start
+                    - w/o bias, restrict learning
+                    - gives neuron freedom to activate even when inputs are zero
+            - tiny decision making unit that learns how imp each input should be
+            - neuron has inputs, weights, activation fn
+        - what is activation fn?
+            - w/o activation fn, we face linearity problem
+            - reality is non-linear and complex
+            - fn decide how much a neuron should activate based on its input
+            - controls the fire rate, decide how much to react
+            - examples of activation fn
+                - sigmoid (0 to 1)
+                - tanh (-1 to 1)
+                - relu (max(x,0))
+                - gelu and swish
+        - what is weights?
+            - weight represent how imp is this input
+            - learning is to find correct values of weights
+        - what is loss fn?
+            - loss = how bad the prediction is
+            - mathmatical fn that measures how far prediction is from correct answer
+            - loss = (actual - predicted)^2 (mse)
+            - square; big mistakes to be punished more
+    - layers - abstraction levels
+    - parameters - learned knowledge
+- what is backpropagation?
+    - assign blame
+    - calculates how much each weight contributed to final err, so we know exactly how to update it
+    - forward pass -> inputs  -> output -> loss
+    - backward pass -> loss -> weights
+    - backpropagation computes gradient of loss with respect to every weight
+        - do gradient of loss and gradient descent are same?
+            - gradient of loss is measurment, tells where to go; measurment of steepest slop
+            - descent is algo, that moves weights
+    - propagate err backward and compute gradients
+- what is learning rate?
+    - knob to control step size
+    - big jump; skip minima
+    - small jump; waste time
+    - determine how much to change weight during each update
+- what is gradient descent?
+    - prediction is made, loss is caln, blame given to each weight, what next..
+    - need sys method to update weights
+    - way to find steepest downward direction on the loss surface
+    - steepest downward slop is gradient
+    - neg gradient - direction where value decreases fastest
+    - gradient descent is algo that repeatedly moves weights in the direction of steepest decrease of loss
+    - new weight = old weight - learning rate * gradient
+- how does the nueral networks are actually trained?
+    - input -> vector of numbers (image - pixel, text - token, audio - wave amplitudes)
+    - forward propagation - structured guess
+    - back propagation - traces responsibility backward and assigns blame proportionally
+    - parameters are updated to reduce loss
+    - networks dont understand concepts, it reacts to patterns
+    - loop:
+        - inputs go forward
+        - network predicts output
+        - loss is calculated
+        - errors flow backward
+        - parameters are adjusted
+- how does the training loop looks like?
+    - forward pass(forward propagation): input -> layers -> output
+    - compute loss: (actual - predicted)
+        - during training llm, how do we calculate loss, do we have all actual answers of every prediction, like every possible questions and its answer?
+            - the end goal of llm is not to give right answer, not to be helpful
+            - goal is just to predict the next token based on previos token
+            - data needed to train is not qa pairs, but large text data
+            - llm is train based on self supervised learning; the data itself generates its own grounded truth
+            - sky is ....; model predicts probabiltites of words (0-1)
+            - loss is caln using cross-entropy loss
+                - what is cross-entropy loss?
+                    - model predict probabiltiy distribution, not a single number
+                    - how surprised the model is by the correct answer
+                    - penalty for wrong confidence
+                    - loss = -log(probab of correct ans)
+                    - measures how badly the model misunderstands the correct answer
+            - model is not train on qa, but on language itself
+            - qa is emergent behavior, but not trained objective
+    - back propagation: err in backwars, gradient is calculated for each weight
+    - gradiet descent: new weight = oldweight - learning rate * gradient
+    - repeat
+- what is rnn?
+    - invented to give nueral networks memory
+    - nn that passes info from one step to next, so it can remember the past
+    - hidden state is memory of nn
+    - hidden state is vector of numbers, that summarizes everything seen so far
+    - rnn memory is fragile and slow
+- how rnn is different from nueral network?
+    - rnn is neural network
+    - normal nn has no memory, treats each input independently
+    - rnn feeds its previos output back into itself
+    - nn : input --> |layers| --> output
+    - rnn : input --> memory1 ; input + memory1 ---> memory2 ; ....
+- examples of rnn?
+    - predictive keyboards
+    - early google translation
+- what are limitations of rnn?
+    - weak long term memory
+    - training is slow
+    - attention is better than rnn
+- diff betn cnn and rnn?
+    - cnn for image / space
+    - rnn for sequence / time
+    - cnn process parallel
+    - rnn process sequentail
+- why it is harder for nets to understand language over image?
+    - image is spatial
+    - language is sequential and contextual
+    - pixels that matter are physically near to each other
+    - imp words that matter, might be far apart in the sequence, long range dependency
+    - language req remembering and relating info across distances
+- what are sequence models?
+    - neural net treats every input has independent
+    - but lang, stock price, music; each input depends upon its prev
+    - so, models that are designed to handle data where order and context matter
+    - process one elmt at time, maintain memory(state)
+    - ex. rnn, lstm
+- does transformer is also part of sequence models?
+    - yes, but use attention instead of recurrent memory
+    - sequence model is not any architecture
+    - any model that handle ordered data, use context
+    - old soln : rnn, lstm, gru; they pass hidden state(that is what i saw in the past)
+    - but this memory fades over long sequence
+    - new soln : attention-based models
+    - look everything at once, decide what matters and connect them directly
+- why do rnn, lstm, bert and other models fail?
+    - rnn process step by step and carry hidden state(memory : compress info) forward
+    - at longer seq, info loss; forget long term dependencies
+    - in lstm added gates to control memory
+    - but still sequential and recurrence, no full context access
+    - cnn look for local neighborhoods, design for spatial patterns
+    - bert is not fail, it is transformer
+    - understanding but not genrational
+    - bert -> gpt
+    - rnn, lstm, gru all needed a mechnaism that allows direct, global, || interaction betn all elmt of seq
+    - soln is attention
+
+
+### Large Language Models
+- what is attention?
+    - mechanism that let model decide what parts of the input matter right now
+    - model decide where to focus
+    - not memory, but selective focus, contextual lookup
+    - mechanism that allows model to dynamically focus on the most relevant parts of the input when producing output
+- why attention is powerful than nueral nets?
+    - rnn compression loss info
+    - rnn cant decide which info matters right now
+    - attention can selective focus
+    - direct conection, no compression
+    - parallel reasoning and understand relationships
+- what is tokenization?
+    - process of breaking text into small tokens
+    - tokens are converted into numbers (token ids)
+    - sentence -> tokens -> token ids -> embeddings -> model process them
+    - what are methods of tokenization?
+        - character tokenization
+        - word tokenization
+        - subword tokenization
+            - byte pair encoding
+            - wordpiece
+        - sentence tokenization
+        - ref.[tiktoken](https://tiktokenizer.vercel.app/) and [openai tokenizer](https://platform.openai.com/tokenizer)
+- what is embeddings?
+    - embedding is vector that represents the meaning of word
+    - "king" → 1432   (token ID)
+    - "king" → [0.21, -1.34, 0.87, 0.55, ..., 1.02]   (embedding)
+        - how are this values of embedding decide, are they random, who decide them?
+            - start w/ random
+            - later updated in training has model understand language and relationship
+    - if two words have similar meaning, their vectors will be closer in space
+    - ref [embedding graph](https://projector.tensorflow.org/)
+- what is positional embeddings? why just word embeddings are not enough?
+    - embeddings only tell what the words are, not where they are in sentence
+    - “Dog bites man.” and “Man bites dog.” have same embeddings; have derive meaning
+    - need to tell position of each word
+    - final input = word embedding + positional embedding
+    - types of positional embeddings:
+        - learned positional embeddings; let model learn
+        - sinusoidal positional embeddings; generate via sin-cosine waves
+- what is transformer?
+    - architecture that process entire sequence at once, no recurrence
+    - 2 steps - self attention and feed forward
+    - self attention - decide what to focus on, evry word look at every other word
+    - multiple layers of attention
+    - improved when scale
+- how chatgpt works?
+    - gpt predicts the next word/token
+    - to predict, it needs to understand input
+    - predict next word based on prev words has inputs
+    - raw models are trained to complete next word
+    - finetune needed for qa style
+    - rlhf learning, good ans and bad ans test
+    - input -> convert to token -> pass in trans layers -> attention build relation -> layers -> next word predict ; repeat till ans complete
+- what is self attention?
+    - rnn, lstm reads words one by one; but language depends on relationships betn words
+    - need mechanism that let each word to look at every other word; -> self attention
+    - each word look at other words and ask : "how important is this other word to understanding me?"
+- what is QKV (query, key and value)?
+    - query - what am i looking for
+    - key - what do i contain
+    - value - what info do i offer
+    - words > tokens > embedding > QKV
+    - attention score = dot product of Q and K
+    - softmax and then normalise; get attention weights
+    - new word = new(drank) = 0.28 * V(I) +0.36 * V(drank) + 0.36 * V(water)
+    - for each word in ||
+    - Q matches K to decide who matters
+    - V provides what knowledge to take
+    - so every words become context aware
+- what is attention formula?
+    - Attention(Q, K, V) = Softmax(QK^T/ √d k ) V
+    - QKT= raw attention scores
+    - √d k for normalisation
+    - softmax to convert into probab, make them sum to 1 in each row
+    - x V to borrows meaning; take information from other words in proportion to attention weights
+- why we do kv cache?
+    - k and v never change
+    - store the k and v vectors of all preciously processed token in memory and reuse them, instead of recompute
+- what is multi-head attention?
+    - language has many relationships
+    - one attention only look at one thing at a time
+    - instead of one attention mechanism, create several attention head in ||
+    - each head learns to focus on a diff aspect of sentence / relationship
+- how models are trained?
+    - learning = improving guesses
+    - loss -> how bad predicition is
+    - learning : guess -> measure loss -> reduce loss -> repeat
+    - parameters store what the model has learned; learning is adjusting this numbers
+        - how does numbers stores the learning?
+            - weigths: how strongly one nueron influences another
+            - biases: offset number
+            - parameters = weights + biases (parameter decide how strongly one feature influences another)
+            - learning is finding right transformation
+            - finding right numbers, so that it will lead input into desired output
+            - inshort finding numbers that represents reality
+            - knowledge is not stored in individual neuron but in geometry of parameter space
+            - after training/ updating para billions of time, networks internal geometry becomes a compressed model of reality
+            - structure of relationship
+            - parameters store patterns of transformation
+    - forward propagation for prediction
+    - backward propagation to correct mistakes
+    - input data -> forward pass : prediction -> loss calculation -> backpropagation : assign blame -> gradient descent -> repeat
+    - ai learns the statistical structure of reality encoded in data
+- why predicting next word creates understanding?
+    - "i put the icream in the freezer so that it would not ...."
+    - why memorization dont work
+    - "the purple elephant danced on the keyboard while drinking coffee"
+    - humans dont memorize examples, humans understand language structure
+    - to predict next word/token, model needs to build internal simulation of reality
+    - prediction -> representation -> understanding
+    - compress massive experience/internet into compact internal structure/reality
+    - "If all mammals breathe oxygen, and whales are mammals, then whales breathe ..."
+    - model was not trained to reason, but it had to reason to predict next word
+    - understanding, reasoning is not train directly, it emerges as side effect of prediction
+- how reasoning gets emerges in models?
+    - reasoning - ability to chain ideas logically to reach new conclusions
+    - attention is require; to link distant concepts and relationship
+    - reasoning is compressed simulation
+- how do hallucinations happen?
+    - confident sounding incorrect/fabricated info
+    - model is design to predict next most likely token, not to verify truth, not to check reality
+    - way to represebt fact is learned by model, how confident language looks, how humans present facts
+    - it has all learned, so it shows confidence while fabricating, leads to false confidence
+    - rag + search reduce hallucinations
+    - models are train to continue, not check reality
+    - for hallucination, input needs to be high pattern simlarity : scientific discovery → physicist → institute → paper → year
+- what is foundational models?
+    - general purpose intelligence
+    - general representation of reality
+- what is reasoning, how do models reason?
+- what is llm?
+    - large language model
+    - large number of parameters - billion to trillion
+    - [LLM visualization](https://bbycroft.net/llm)
+    - gpt4, claude, gemini
+- what is slm?
+    - small language model
+    - smaller number of parameters - million
+    - phi-2, mistral7b, distilBERT
+- what are other architecture than transformer?
+    - feedforward neural networks (fnn)
+    - convolutional neural networks (cnn)
+    - recurrent neural networks (rnn)
+    - long short term memory (lstm)
+    - gated recurrent unit (gru)
+    - graph neural networks (gnn)
+    - capsule networks
+    - autoencoders
+    - diffusion models
+    - state space models(ssm) - s4, mamba, rwkv -> o(n)
+    - neural turing machines - nets + ram
+    - modular neural nets
+    - world model architectures - deepminde mu0, dreamer, gato
+    - agent architectures - autogpt, react, tree of thoughts
+
+
+### Applied AI
