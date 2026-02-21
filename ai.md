@@ -54,7 +54,7 @@
                 - ex. spam/notspam, fraud/notfraud, cat/dog
                 - draw boundries using past examples
                 - knn
-                    - redicts a label by looking at the K most similar past examples
+                    - predicts a label by looking at the K most similar past examples
                     - choosing the majority label among them
                     - K most similar past points, then vote
                     - ex. customer segmentation
@@ -193,7 +193,7 @@
         - manual feat eng
         - cant learn representation
         - neural networks for representation learning
-- neural networks
+- deep learning
     - what are neural networks?
         - learns by applying many small transformations in sequence, where is each transformations builds on prev one
         - to build models, that can learn in layers
@@ -339,7 +339,7 @@
         - bert -> gpt
         - rnn, lstm, gru all needed a mechnaism that allows direct, global, || interaction betn all elmt of seq
         - soln is attention
-- attention
+- large language models
     - what is attention?
         - mechanism that let model decide what parts of the input matter right now
         - model decide where to focus
@@ -496,3 +496,4 @@
         - modular neural nets
         - world model architectures - deepminde mu0, dreamer, gato
         - agent architectures - autogpt, react, tree of thoughts
+- Applied AI
