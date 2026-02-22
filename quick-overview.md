@@ -1,7 +1,7 @@
 ## Artificial Intelligence
 
 - what does it mean to learn?
-    - building accuarate mental model to understand, predict and use
+    - building accurate mental model to understand, predict and use
     - learning : confusion -> pattern recognition -> understanding -> prediction
 - what is knowledge? what does it mean to know something?
     - mental model that represents how something works
@@ -10,37 +10,60 @@
             - brain connect ideas, structure is req to build relationships
             - reasoning needs chaining; chain needs connection; unstructure knowledge dont have connections
             - structure : info -> understanding
-    - child [2+2=4 -> memory]
-    - but when child can do 3+3, and use to count obj
+    - sys1 and sys2 thinking (thinking fast and slow)
+    - child [2+2= 4 -> memory]; you dont actually count this, its cache(sys1 thinking- fast)
+    - but when child can do 3385+3523, and use to count obj
     - then child knows addition
     - knowing - ability to use mental model to understand, predict and act
 - what is intelligence?
     - ability to observe, understand hidden patterns, predict outcomes, decide what to act/do
     - ability to build and use mental models to solve new problmes
+    - use the mental models in new env, and update them when wrong
     - not relying on just memory
+        - why one should not rely on memory?
+            - "purple elephant was dancing on keyboard" -> totaly new sentence
+            - one has never process this sentence before, so no understanding : based on just memory
+            - one with mental model of language and its structure can understand : memory + mental model
+- what does exactly is mental model?
+    - you touch the fire once, it burns, you avoid it later
+    - mental model = [fire -> heat -> pain -> avoid]
+    - compressed internal representation of reality (how things work)
+        - how are mental models represented in brain?
+            - brain uses distrubited representation (patterns of many neurons), not each neuron for each concept
+            - neuron recive signal, integrate them, fire if above threshold and sends signal forward
+            - neural nets stores distributed statistical approximations of structure
+                - what does it really mean?
+                    - network stores numbers(weights and bias) not explicit info/concept
+                    - network spreads knowledge across many weights
+                    - those weights encode probabilistic patterns that mimic the structural relationships in data
+                    - high-dimensional probability landscapes
+                    - king − man + woman ≈ queen; relationships becomes directions in space
+                    - connected numbers that learns patterns from examples and roughly captures how things are related to ech other
+                    - it is just statistical representation of reality
 - what is ai?
     - getting machines to perform tasks that req human intelligence
     - build there own understanding of world, act on it
-    - figure it out
+    - figure it out by own
 
 
-### Hardcoded Intelligence
+### Symbolic AI
 - how do we hardcode intelligence?
     - explicitly writing rules that tells machines what to do in every situation
-    - if and then
+    - if and then and use symbolic reasoning
     - rule based : encode expert knowledge
 - examples of rule based systems?
     - early chess engines
     - spam filters before ml
     - eliza chatbot
     - npc's in games
+    - prolog prgm language
 - what were drawbacks that lead to ml?
     - rule based dont scale, adapt, generalize, improve over time
-    - ambiguity
-    - rules conflicting rules (rules about rules)
+    - ambiguity and uncertain
+    - rules conflicting rules
     - reality refuses to fit into rules
     - intelligence is not list of rules , it is process of learning from exp
-    - stop telling machines what are rules, let them derive rules from data (rules --> patterns) >> machine learning
+    - stop telling machines what are rules, let them derive rules from data (rules: patterns) >> machine learning
 
 
 ### Machine Learning
@@ -196,7 +219,6 @@
     - cant represent hierarchical concepts
     - manual feat eng
     - cant learn representation
-    - neural networks for representation learning
 
 
 ### Deep Learning
@@ -345,9 +367,6 @@
     - bert -> gpt
     - rnn, lstm, gru all needed a mechnaism that allows direct, global, || interaction betn all elmt of seq
     - soln is attention
-
-
-### Large Language Models
 - what is attention?
     - mechanism that let model decide what parts of the input matter right now
     - model decide where to focus
@@ -503,6 +522,3 @@
     - modular neural nets
     - world model architectures - deepminde mu0, dreamer, gato
     - agent architectures - autogpt, react, tree of thoughts
-
-
-### Applied AI
