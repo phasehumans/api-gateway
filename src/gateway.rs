@@ -75,14 +75,14 @@ impl Gateway {
         ];
 
         if config.rate_limit.enabled {
-            let policy = match config.rate_limit.policy {
+            let policy = match &config.rate_limit.policy {
                 RateLimitPolicyConfig::TokenBucket {
                     capacity,
                     refill_tokens_per_sec,
                 } => RateLimitPolicy {
                     algorithm: RateLimitAlgorithm::TokenBucket {
-                        capacity,
-                        refill_tokens_per_sec,
+                        capacity: *capacity,
+                        refill_tokens_per_sec: *refill_tokens_per_sec,
                     },
                 },
                 RateLimitPolicyConfig::SlidingWindow {
@@ -90,8 +90,8 @@ impl Gateway {
                     max_requests,
                 } => RateLimitPolicy {
                     algorithm: RateLimitAlgorithm::SlidingWindow {
-                        window_seconds,
-                        max_requests,
+                        window_seconds: *window_seconds,
+                        max_requests: *max_requests,
                     },
                 },
             };
@@ -111,7 +111,8 @@ impl Gateway {
             )));
         }
 
-        let router: Arc<dyn RoutingStrategy> = Arc::new(IntelligentRouter::new(config.routing.clone()));
+        let router: Arc<dyn RoutingStrategy> =
+            Arc::new(IntelligentRouter::new(config.routing.clone()));
         let upstream_pool = Arc::new(UpstreamPool::new(config.upstreams.clone())?);
         let circuit_breaker = CircuitBreaker::new(config.circuit_breaker.clone());
 
