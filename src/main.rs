@@ -22,7 +22,6 @@ use axum::{
         State,
     },
     http::Request,
-    routing::any,
 };
 use gateway::Gateway;
 use tokio::net::TcpListener;
@@ -39,7 +38,7 @@ async fn main() -> anyhow::Result<()> {
 
     let gateway = Arc::new(Gateway::from_config(cfg).await?);
 
-    let app = Router::new().fallback(any(proxy_handler)).with_state(gateway);
+    let app = Router::new().fallback(proxy_handler).with_state(gateway);
 
     let listener = TcpListener::bind(bind_addr)
         .await
@@ -63,9 +62,8 @@ async fn proxy_handler(
 }
 
 fn init_tracing() {
-    let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-        EnvFilter::new("info,hyper=warn,reqwest=warn,tower_http=warn")
-    });
+    let filter = EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| EnvFilter::new("info,hyper=warn,reqwest=warn,tower_http=warn"));
 
     tracing_subscriber::fmt()
         .with_env_filter(filter)
