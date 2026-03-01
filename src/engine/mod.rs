@@ -4,6 +4,7 @@ pub mod error;
 pub mod metrics;
 pub mod models;
 pub mod queue;
+pub mod rate_limit;
 pub mod sandbox;
 pub mod store;
 pub mod worker;
@@ -14,13 +15,8 @@ use anyhow::Context;
 use axum::Router;
 
 use crate::engine::{
-    api::routes,
-    config::EngineConfig,
-    metrics::MetricsRegistry,
-    queue::Scheduler,
-    sandbox::SandboxFactory,
-    store::ExecutionStore,
-    worker::spawn_worker_pool,
+    api::routes, config::EngineConfig, metrics::MetricsRegistry, queue::Scheduler,
+    sandbox::SandboxFactory, store::ExecutionStore, worker::spawn_worker_pool,
 };
 
 pub async fn run() -> anyhow::Result<()> {
@@ -33,7 +29,7 @@ pub async fn run() -> anyhow::Result<()> {
     let sandbox = SandboxFactory::from_config(&config).context("sandbox backend init failed")?;
 
     spawn_worker_pool(
-        config.worker_count,
+        config.worker_count.max(1),
         scheduler.receiver(),
         store.clone(),
         metrics.clone(),
@@ -42,7 +38,9 @@ pub async fn run() -> anyhow::Result<()> {
 
     let app: Router = routes(config.clone(), store, scheduler, metrics);
     let listener = tokio::net::TcpListener::bind(config.bind_addr).await?;
-    let local = listener.local_addr().unwrap_or(SocketAddr::from(([0, 0, 0, 0], 0)));
+    let local = listener
+        .local_addr()
+        .unwrap_or(SocketAddr::from(([0, 0, 0, 0], 0)));
     tracing::info!(bind = %local, "sandbox execution engine ready");
     axum::serve(listener, app).await?;
     Ok(())

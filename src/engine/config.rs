@@ -1,5 +1,5 @@
 use std::{
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     env,
     net::SocketAddr,
     path::PathBuf,
@@ -17,6 +17,8 @@ pub struct EngineConfig {
     pub default_limits: ExecutionLimits,
     pub api_keys: HashMap<String, String>,
     pub rate_limit_per_minute: u32,
+    pub rate_limit_burst: u32,
+    pub network_allowed_tenants: HashSet<String>,
     pub persistence_path: Option<PathBuf>,
     pub log_level: String,
 }
@@ -40,6 +42,10 @@ impl EngineConfig {
                 &env::var("API_KEYS").unwrap_or_else(|_| "default:dev-key".to_string()),
             ),
             rate_limit_per_minute: env_parse("RATE_LIMIT_PER_MINUTE", 120u32),
+            rate_limit_burst: env_parse("RATE_LIMIT_BURST", 20u32),
+            network_allowed_tenants: parse_list(
+                &env::var("NETWORK_ALLOWED_TENANTS").unwrap_or_default(),
+            ),
             persistence_path: env::var("PERSIST_RESULTS_PATH").ok().map(PathBuf::from),
             log_level: env::var("LOG_LEVEL").unwrap_or_else(|_| "info".to_string()),
         }
@@ -80,6 +86,20 @@ fn parse_api_keys(input: &str) -> HashMap<String, String> {
         keys.insert("dev-key".to_string(), "default".to_string());
     }
     keys
+}
+
+fn parse_list(input: &str) -> HashSet<String> {
+    input
+        .split(',')
+        .filter_map(|raw| {
+            let entry = raw.trim();
+            if entry.is_empty() {
+                None
+            } else {
+                Some(entry.to_string())
+            }
+        })
+        .collect()
 }
 
 fn env_parse<T>(key: &str, default: T) -> T

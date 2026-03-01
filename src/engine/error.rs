@@ -1,26 +1,20 @@
+use std::fmt::{Display, Formatter};
+
 use axum::{
     Json,
     http::StatusCode,
     response::{IntoResponse, Response},
 };
 use serde::Serialize;
-use thiserror::Error;
 
-#[derive(Debug, Error)]
+#[derive(Debug)]
 pub enum EngineError {
-    #[error("unauthorized")]
     Unauthorized,
-    #[error("forbidden")]
     Forbidden,
-    #[error("invalid request: {0}")]
     InvalidRequest(String),
-    #[error("rate limit exceeded")]
     RateLimited,
-    #[error("queue is full")]
     QueueFull,
-    #[error("execution not found")]
     NotFound,
-    #[error("internal error: {0}")]
     Internal(String),
 }
 
@@ -28,6 +22,22 @@ pub enum EngineError {
 struct ErrorBody {
     error: String,
 }
+
+impl Display for EngineError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            EngineError::Unauthorized => write!(f, "unauthorized"),
+            EngineError::Forbidden => write!(f, "forbidden"),
+            EngineError::InvalidRequest(msg) => write!(f, "invalid request: {msg}"),
+            EngineError::RateLimited => write!(f, "rate limit exceeded"),
+            EngineError::QueueFull => write!(f, "queue is full"),
+            EngineError::NotFound => write!(f, "execution not found"),
+            EngineError::Internal(msg) => write!(f, "internal error: {msg}"),
+        }
+    }
+}
+
+impl std::error::Error for EngineError {}
 
 impl IntoResponse for EngineError {
     fn into_response(self) -> Response {

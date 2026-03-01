@@ -1,6 +1,5 @@
 use std::collections::BTreeMap;
 
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -34,6 +33,18 @@ pub struct ExecutionLimits {
     pub max_processes: u64,
     pub max_file_size_bytes: u64,
     pub max_output_bytes: usize,
+}
+
+impl ExecutionLimits {
+    pub fn normalized(mut self) -> Self {
+        self.cpu_cores = self.cpu_cores.clamp(0.1, 4.0);
+        self.memory_mb = self.memory_mb.clamp(32, 8192);
+        self.timeout_ms = self.timeout_ms.clamp(50, 120_000);
+        self.max_processes = self.max_processes.clamp(1, 256);
+        self.max_file_size_bytes = self.max_file_size_bytes.clamp(1024, 100 * 1024 * 1024);
+        self.max_output_bytes = self.max_output_bytes.clamp(1024, 4 * 1024 * 1024);
+        self
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -96,9 +107,18 @@ pub struct ExecutionRecord {
     pub limits: ExecutionLimits,
     pub output: Option<ExecutionOutput>,
     pub error: Option<String>,
-    pub created_at: DateTime<Utc>,
-    pub started_at: Option<DateTime<Utc>>,
-    pub finished_at: Option<DateTime<Utc>>,
+    #[serde(default)]
+    pub events: Vec<ExecutionEvent>,
+    pub created_at_ms: u64,
+    pub started_at_ms: Option<u64>,
+    pub finished_at_ms: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExecutionEvent {
+    pub ts_ms: u64,
+    pub stage: String,
+    pub message: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -112,7 +132,7 @@ pub struct ExecutionSummaryResponse {
     pub id: Uuid,
     pub tenant_id: String,
     pub status: ExecutionStatus,
-    pub created_at: DateTime<Utc>,
-    pub started_at: Option<DateTime<Utc>>,
-    pub finished_at: Option<DateTime<Utc>>,
+    pub created_at_ms: u64,
+    pub started_at_ms: Option<u64>,
+    pub finished_at_ms: Option<u64>,
 }

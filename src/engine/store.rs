@@ -1,12 +1,12 @@
 use std::{path::PathBuf, sync::Arc};
 
-use chrono::Utc;
 use dashmap::DashMap;
+use tokio::io::AsyncWriteExt;
 use tokio::sync::Mutex;
 use uuid::Uuid;
 
 use crate::engine::models::{
-    ExecutionOutput, ExecutionRecord, ExecutionRequest, ExecutionStatus,
+    ExecutionEvent, ExecutionOutput, ExecutionRecord, ExecutionRequest, ExecutionStatus,
 };
 
 #[derive(Clone)]
@@ -33,10 +33,29 @@ impl ExecutionStore {
         self.records.get(id).map(|e| e.value().clone())
     }
 
+    pub fn remove(&self, id: &Uuid) {
+        self.records.remove(id);
+    }
+
     pub fn mark_running(&self, id: Uuid) {
         if let Some(mut entry) = self.records.get_mut(&id) {
             entry.status = ExecutionStatus::Running;
-            entry.started_at = Some(Utc::now());
+            entry.started_at_ms = Some(now_ms());
+            entry.events.push(ExecutionEvent {
+                ts_ms: now_ms(),
+                stage: "running".to_string(),
+                message: "worker started execution".to_string(),
+            });
+        }
+    }
+
+    pub fn append_event(&self, id: Uuid, stage: impl Into<String>, message: impl Into<String>) {
+        if let Some(mut entry) = self.records.get_mut(&id) {
+            entry.events.push(ExecutionEvent {
+                ts_ms: now_ms(),
+                stage: stage.into(),
+                message: message.into(),
+            });
         }
     }
 
@@ -51,7 +70,12 @@ impl ExecutionStore {
             entry.status = status;
             entry.output = output;
             entry.error = error;
-            entry.finished_at = Some(Utc::now());
+            entry.finished_at_ms = Some(now_ms());
+            entry.events.push(ExecutionEvent {
+                ts_ms: now_ms(),
+                stage: "finished".to_string(),
+                message: "execution finalized".to_string(),
+            });
             Some(entry.clone())
         } else {
             None
@@ -66,8 +90,8 @@ impl ExecutionStore {
             let mut options = tokio::fs::OpenOptions::new();
             options.create(true).append(true);
             if let Ok(mut file) = options.open(path).await {
-                let _ = tokio::io::AsyncWriteExt::write_all(&mut file, line.as_bytes()).await;
-                let _ = tokio::io::AsyncWriteExt::write_all(&mut file, b"\n").await;
+                let _ = file.write_all(line.as_bytes()).await;
+                let _ = file.write_all(b"\n").await;
             }
         }
     }
@@ -87,9 +111,21 @@ impl ExecutionStore {
             limits,
             output: None,
             error: None,
-            created_at: Utc::now(),
-            started_at: None,
-            finished_at: None,
+            events: vec![ExecutionEvent {
+                ts_ms: now_ms(),
+                stage: "queued".to_string(),
+                message: "execution accepted and queued".to_string(),
+            }],
+            created_at_ms: now_ms(),
+            started_at_ms: None,
+            finished_at_ms: None,
         }
     }
+}
+
+fn now_ms() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as u64)
+        .unwrap_or(0)
 }

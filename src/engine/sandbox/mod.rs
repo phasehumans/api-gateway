@@ -1,4 +1,5 @@
 mod docker;
+mod language;
 mod process;
 
 use std::sync::Arc;
@@ -12,6 +13,7 @@ use crate::engine::{
 };
 
 pub use docker::DockerSandbox;
+pub use language::LanguageSpec;
 pub use process::ProcessSandbox;
 
 #[derive(Debug, Clone)]

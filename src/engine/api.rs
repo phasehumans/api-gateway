@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
+use std::sync::Arc;
 
 use axum::{
     Json, Router,
@@ -16,6 +16,7 @@ use crate::engine::{
         CreateExecutionResponse, ExecutionRecord, ExecutionRequest, ExecutionSummaryResponse,
     },
     queue::{QueuedJob, Scheduler},
+    rate_limit::TenantRateLimiter,
     store::ExecutionStore,
 };
 
@@ -25,7 +26,7 @@ pub struct AppState {
     store: Arc<ExecutionStore>,
     scheduler: Scheduler,
     metrics: Arc<MetricsRegistry>,
-    ratelimit_state: Arc<tokio::sync::Mutex<HashMap<String, std::time::Instant>>>,
+    rate_limiter: TenantRateLimiter,
 }
 
 pub fn routes(
@@ -34,12 +35,14 @@ pub fn routes(
     scheduler: Scheduler,
     metrics_registry: Arc<MetricsRegistry>,
 ) -> Router {
+    let rate_limiter =
+        TenantRateLimiter::new(config.rate_limit_per_minute, config.rate_limit_burst);
     let state = AppState {
         config,
         store,
         scheduler,
         metrics: metrics_registry,
-        ratelimit_state: Arc::new(tokio::sync::Mutex::new(HashMap::new())),
+        rate_limiter,
     };
     Router::new()
         .route("/healthz", get(health))
@@ -67,6 +70,9 @@ async fn submit_execution(
     enforce_rate_limit(&state, &tenant_id).await?;
 
     validate_request(&request)?;
+    if request.allow_network && !state.config.network_allowed_tenants.contains(&tenant_id) {
+        return Err(EngineError::Forbidden);
+    }
     if request.mode.is_none() {
         request.mode = Some(crate::engine::models::ExecutionMode::Human);
     }
@@ -75,14 +81,15 @@ async fn submit_execution(
     let limits = request
         .limits
         .clone()
-        .unwrap_or_else(|| state.config.default_limits.clone());
+        .unwrap_or_else(|| state.config.default_limits.clone())
+        .normalized();
     let record: ExecutionRecord =
         state
             .store
             .create_record(id, tenant_id.clone(), request.clone(), limits.clone());
     state.store.insert(record);
 
-    state
+    if let Err(err) = state
         .scheduler
         .submit(QueuedJob {
             id,
@@ -90,7 +97,11 @@ async fn submit_execution(
             request,
             limits,
         })
-        .await?;
+        .await
+    {
+        state.store.remove(&id);
+        return Err(err);
+    }
 
     Ok((
         StatusCode::ACCEPTED,
@@ -113,9 +124,9 @@ async fn get_execution(
         id: record.id,
         tenant_id: record.tenant_id,
         status: record.status,
-        created_at: record.created_at,
-        started_at: record.started_at,
-        finished_at: record.finished_at,
+        created_at_ms: record.created_at_ms,
+        started_at_ms: record.started_at_ms,
+        finished_at_ms: record.finished_at_ms,
     }))
 }
 
@@ -134,25 +145,18 @@ fn authenticate(config: &EngineConfig, headers: &HeaderMap) -> Result<String, En
         .get("x-api-key")
         .and_then(|v| v.to_str().ok())
         .ok_or(EngineError::Unauthorized)?;
-    config
-        .api_keys
-        .get(key)
-        .cloned()
-        .ok_or(EngineError::Unauthorized)
+    for (candidate_key, tenant_id) in &config.api_keys {
+        if constant_time_eq(key.as_bytes(), candidate_key.as_bytes()) {
+            return Ok(tenant_id.clone());
+        }
+    }
+    Err(EngineError::Unauthorized)
 }
 
 async fn enforce_rate_limit(state: &AppState, tenant_id: &str) -> Result<(), EngineError> {
-    let mut map = state.ratelimit_state.lock().await;
-    let now = std::time::Instant::now();
-    let allowance = std::time::Duration::from_secs(
-        (60f64 / state.config.rate_limit_per_minute.max(1) as f64).ceil() as u64,
-    );
-    if let Some(last) = map.get(tenant_id) {
-        if now.duration_since(*last) < allowance {
-            return Err(EngineError::RateLimited);
-        }
+    if !state.rate_limiter.allow(tenant_id).await {
+        return Err(EngineError::RateLimited);
     }
-    map.insert(tenant_id.to_string(), now);
     Ok(())
 }
 
@@ -171,13 +175,47 @@ fn validate_request(request: &ExecutionRequest) -> Result<(), EngineError> {
     if request.stdin.len() > 256_000 {
         return Err(EngineError::InvalidRequest("stdin too large".to_string()));
     }
+    if request.test_cases.len() > 128 {
+        return Err(EngineError::InvalidRequest(
+            "too many test cases; max is 128".to_string(),
+        ));
+    }
+    for case in &request.test_cases {
+        if case.stdin.len() > 64_000 {
+            return Err(EngineError::InvalidRequest(
+                "test case stdin too large".to_string(),
+            ));
+        }
+    }
+    if let Some(limits) = &request.limits {
+        if limits.timeout_ms == 0 || limits.memory_mb == 0 || limits.max_output_bytes == 0 {
+            return Err(EngineError::InvalidRequest(
+                "limits must be greater than zero".to_string(),
+            ));
+        }
+    }
     Ok(())
 }
 
-fn load_for_tenant(state: &AppState, id: Uuid, tenant_id: &str) -> Result<ExecutionRecord, EngineError> {
+fn load_for_tenant(
+    state: &AppState,
+    id: Uuid,
+    tenant_id: &str,
+) -> Result<ExecutionRecord, EngineError> {
     let record = state.store.get(&id).ok_or(EngineError::NotFound)?;
     if record.tenant_id != tenant_id {
         return Err(EngineError::Forbidden);
     }
     Ok(record)
+}
+
+fn constant_time_eq(a: &[u8], b: &[u8]) -> bool {
+    if a.len() != b.len() {
+        return false;
+    }
+    let mut out = 0u8;
+    for (l, r) in a.iter().zip(b.iter()) {
+        out |= l ^ r;
+    }
+    out == 0
 }
