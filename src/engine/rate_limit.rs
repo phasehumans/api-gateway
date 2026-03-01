@@ -63,3 +63,19 @@ impl TenantRateLimiter {
         bucket.try_take(now)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::TenantRateLimiter;
+
+    #[tokio::test]
+    async fn enforces_burst_and_refill() {
+        let limiter = TenantRateLimiter::new(60, 2);
+        assert!(limiter.allow("tenant-a").await);
+        assert!(limiter.allow("tenant-a").await);
+        assert!(!limiter.allow("tenant-a").await);
+
+        tokio::time::sleep(std::time::Duration::from_millis(1100)).await;
+        assert!(limiter.allow("tenant-a").await);
+    }
+}

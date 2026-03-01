@@ -1,85 +1,189 @@
-# Rust API Gateway
+# Sandboxed Code Execution Engine (Rust)
 
-A modular, middleware-driven API gateway inspired by Kong-style internal abstractions.
+A multi-tenant, API-driven execution engine for running untrusted code with strict isolation and resource control.
 
-## Features
+## System Architecture Diagram (Text)
 
-- API key authentication (`x-api-key`) with timing-safe comparison
-- Rate limiting with two algorithms:
-  - Token bucket
-  - Sliding window
-- Rate limiting backends:
-  - In-memory
-  - Redis (atomic Lua scripts)
-- Request logging with request IDs and latency
-- Request validation (method allowlist, header limits, body size checks)
-- Circuit breaking (closed/open/half-open)
-- Intelligent upstream routing (weights + runtime load/failure/latency signals)
-- Failover across ranked upstreams when an upstream call fails
-- Security headers on responses
+```text
+                    +-------------------------------+
+                    |           API Layer           |
+                    |  Axum: Auth, Validation, RL  |
+                    +-------------------------------+
+                                |
+                                v
+                    +-------------------------------+
+                    |          Scheduler            |
+                    |   Bounded Queue (backpressure)|
+                    +-------------------------------+
+                                |
+                                v
+     +---------------------------------------------------------------+
+     |                         Worker Pool                           |
+     |   N workers pull jobs, update status, execute, persist result |
+     +---------------------------------------------------------------+
+                                |
+                                v
+                    +-------------------------------+
+                    |        Sandbox Layer          |
+                    |  Trait-based pluggable backend|
+                    |  - Docker (default, isolated) |
+                    |  - Process (unsafe fallback)  |
+                    +-------------------------------+
+                                |
+                                v
+                    +-------------------------------+
+                    |  Result Store + Persistence   |
+                    | in-memory + optional JSONL log|
+                    +-------------------------------+
+```
 
-## Architecture
+### Separation of Concerns
 
-- `src/gateway.rs`: request lifecycle orchestration
-- `src/middleware/*`: middleware contracts and implementations
-- `src/ratelimit/*`: backend abstraction + in-memory and Redis implementations
-- `src/upstream.rs`: forwarding client and upstream runtime metrics
-- `src/router.rs`: intelligent routing strategy
-- `src/circuit_breaker.rs`: resilience state machine
-- `src/config.rs`: environment-driven config
+- API Layer: request auth, tenant isolation, validation, rate limiting, status/result APIs.
+- Scheduler: bounded queue for admission control and load shedding.
+- Worker Nodes: async worker pool for concurrent execution.
+- Sandbox Layer: execution backends with per-run resource controls.
 
-## Configuration
+## Folder Structure
 
-Key environment variables:
+```text
+src/
+  main.rs
+  engine/
+    mod.rs                 # bootstrap: config, tracing, router, workers
+    api.rs                 # REST handlers
+    config.rs              # environment config
+    error.rs               # API error model
+    metrics.rs             # counters + queue depth rendering
+    models.rs              # request/response/domain models
+    queue.rs               # scheduler + job queue types
+    rate_limit.rs          # per-tenant token bucket
+    store.rs               # in-memory records + optional persistence
+    worker.rs              # worker execution lifecycle
+    sandbox/
+      mod.rs               # sandbox trait + backend factory
+      language.rs          # language runtime mappings
+      docker.rs            # secure default backend
+      process.rs           # unsafe fallback backend
+```
 
-- `BIND_ADDR` (default: `0.0.0.0:8080`)
-- `API_KEYS` (default: `dev-key`)
-- `AUTH_EXEMPT_PREFIXES` (default: `/health`)
-- `UPSTREAMS` (default: `svc-a=http://127.0.0.1:9001,svc-b=http://127.0.0.1:9002`)
-  - Format per upstream: `name=url@weight@timeout_ms`
-- `ROUTES` (default: `/=svc-a|svc-b,/health=svc-a`)
+## Core Modules Definition
 
-Rate limiting:
+- `EngineConfig`: API bind, worker/queue sizing, limits, sandbox backend, tenant keys, rate limits.
+- `ExecutionStore`: execution record lifecycle (`queued -> running -> final`) and replay events.
+- `Scheduler`: queue admission and backpressure (`503` when full).
+- `TenantRateLimiter`: per-tenant token bucket.
+- `SandboxBackend` trait:
+  - `DockerSandbox`: host-isolated execution with strict flags.
+  - `ProcessSandbox`: local fallback for development only.
+- `worker`: dispatches jobs, executes batches, classifies status, persists results.
 
-- `RATE_LIMIT_ENABLED` (default: `true`)
-- `RATE_LIMIT_BACKEND` (`memory` or `redis`)
-- `RATE_LIMIT_ALGORITHM` (`token_bucket` or `sliding_window`)
-- `RATE_LIMIT_KEY_HEADER` (default: `x-api-key`)
-- `RATE_LIMIT_FAIL_OPEN` (default: `false`)
+## REST API
 
-Token bucket:
+- `POST /v1/executions`
+  - Submit code for execution.
+  - Requires `x-api-key`.
+- `GET /v1/executions/{id}`
+  - Retrieve status metadata.
+- `GET /v1/executions/{id}/result`
+  - Retrieve full output (`stdout`, `stderr`, `exit_code`, `duration_ms`, replay events).
+- `GET /healthz`
+  - Health probe.
+- `GET /metrics`
+  - Prometheus-style counters/gauges.
 
-- `RATE_LIMIT_CAPACITY` (default: `200`)
-- `RATE_LIMIT_REFILL_TPS` (default: `100`)
+## Execution Lifecycle Flow
 
-Sliding window:
+1. API receives execution request.
+2. Auth validates API key and maps to tenant.
+3. Input validation checks language/code/args/stdin/limits/test batch.
+4. Rate limiter checks tenant token bucket.
+5. Scheduler enqueues job into bounded queue.
+6. Worker claims job and marks status `running`.
+7. Sandbox backend executes with resource constraints.
+8. Output captured and truncated by `max_output_bytes`.
+9. Final status persisted (`succeeded|failed|timed_out`).
+10. Optional JSONL persistence appends execution record.
+11. Temporary execution artifacts are cleaned deterministically.
 
-- `RATE_LIMIT_WINDOW_SECONDS` (default: `60`)
-- `RATE_LIMIT_MAX_REQUESTS` (default: `600`)
+## Security Model
 
-Redis backend:
+- No host filesystem escape:
+  - Docker backend mounts only per-job source directory read-only.
+- No privilege escalation:
+  - `--cap-drop ALL`, `--security-opt no-new-privileges`, read-only root FS.
+- No persistent container state:
+  - `docker run --rm` + per-job ephemeral working directory.
+- Network disabled by default:
+  - `--network none` unless tenant allowlisted and request opts in.
+- Fork bomb defense:
+  - `--pids-limit` + `--ulimit nproc`.
+- Infinite loop defense:
+  - hard execution timeout with kill path.
+- Memory exhaustion defense:
+  - Docker memory limit (`--memory`).
+- Output explosion defense:
+  - bounded output capture.
 
-- `REDIS_URL` (default: `redis://127.0.0.1:6379`)
-- `REDIS_KEY_PREFIX` (default: `gateway:ratelimit`)
+## Resource Controls
 
-Circuit breaker:
+Per execution:
 
-- `CB_FAILURE_THRESHOLD` (default: `5`)
-- `CB_OPEN_SECONDS` (default: `20`)
-- `CB_HALF_OPEN_MAX` (default: `1`)
+- CPU cores
+- Memory MB
+- Timeout ms
+- Max process count
+- Max source file size
+- Max output bytes
 
-Validation:
+## Scaling Strategy
 
-- `MAX_BODY_BYTES` (default: `1048576`)
-- `ALLOWED_METHODS` (default: `GET,POST,PUT,PATCH,DELETE,OPTIONS`)
-- `REQUIRE_HOST_HEADER` (default: `true`)
-- `MAX_HEADERS` (default: `128`)
+- Stateless API nodes:
+  - Scale horizontally behind a load balancer.
+- Worker pool scaling:
+  - Increase worker replicas and queue consumers.
+- Queue backpressure:
+  - Bounded channel prevents overload and enables load shedding.
+- Multi-tenant safety:
+  - API key to tenant mapping + per-tenant rate limiting + tenant-scoped result access.
+- Pluggable sandbox backend:
+  - Current backends: Docker, Process.
+  - Designed for additional backends (microVM/WASM) by implementing `SandboxBackend`.
 
-Routing tuning:
+## Failure Handling Strategy
 
-- `ROUTING_PREFER_LOW_LATENCY` (default: `true`)
-- `ROUTING_IN_FLIGHT_PENALTY` (default: `12`)
-- `ROUTING_FAILURE_PENALTY` (default: `250`)
+- Queue full: reject with `503` and remove staged record.
+- Sandbox spawn failure: mark execution as failed with error.
+- Timeout: kill execution, mark as timed out.
+- Worker failure during run: persist failure state for the job.
+- Persistence write failure: non-fatal; in-memory record still retained.
+- Replay visibility: each job stores ordered execution events.
+
+## Stretch Features Included
+
+- Multi-language support:
+  - Python, JavaScript, Rust, C.
+- Compile + run:
+  - Rust/C compile before execution.
+- Basic compilation cache:
+  - Process backend caches compiled binaries by source hash.
+- AI-agent optimized mode:
+  - `agent_optimized` mode increases timeout/output ceilings.
+- Batch test case execution:
+  - one submission can run multiple stdin test cases.
+- Replay logs:
+  - execution event trail in result payload.
+
+## Tradeoffs
+
+- Docker backend security vs startup latency:
+  - safer isolation with higher cold-start overhead than pure process execution.
+- In-memory queue/store simplicity vs durability:
+  - fast local operation, but requires external queue/store for cross-node durability.
+- Process backend convenience vs safety:
+  - useful for local development; not safe for untrusted multi-tenant production.
+- Single-service deployment simplicity vs independent scaling:
+  - API and workers run together now; can be split into dedicated services later.
 
 ## Run
 
@@ -87,4 +191,15 @@ Routing tuning:
 cargo run
 ```
 
-Then send requests with `x-api-key` set to a configured key.
+### Key Environment Variables
+
+- `BIND_ADDR` (default `0.0.0.0:8080`)
+- `WORKER_COUNT` (default `4`)
+- `QUEUE_CAPACITY` (default `1024`)
+- `API_KEYS` (format: `tenant:key,tenant2:key2`)
+- `SANDBOX_BACKEND` (`docker` or `process`)
+- `RATE_LIMIT_PER_MINUTE` (default `120`)
+- `RATE_LIMIT_BURST` (default `20`)
+- `NETWORK_ALLOWED_TENANTS` (comma-separated tenant IDs)
+- `PERSIST_RESULTS_PATH` (optional JSONL path)
+- `DEFAULT_CPU_CORES`, `DEFAULT_MEMORY_MB`, `DEFAULT_TIMEOUT_MS`, `DEFAULT_MAX_PROCESSES`

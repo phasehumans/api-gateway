@@ -136,3 +136,28 @@ pub struct ExecutionSummaryResponse {
     pub started_at_ms: Option<u64>,
     pub finished_at_ms: Option<u64>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::ExecutionLimits;
+
+    #[test]
+    fn normalizes_limits_to_safe_bounds() {
+        let normalized = ExecutionLimits {
+            cpu_cores: 0.01,
+            memory_mb: 1,
+            timeout_ms: 1,
+            max_processes: 999,
+            max_file_size_bytes: 1,
+            max_output_bytes: 99_000_000,
+        }
+        .normalized();
+
+        assert_eq!(normalized.cpu_cores, 0.1);
+        assert_eq!(normalized.memory_mb, 32);
+        assert_eq!(normalized.timeout_ms, 50);
+        assert_eq!(normalized.max_processes, 256);
+        assert_eq!(normalized.max_file_size_bytes, 1024);
+        assert_eq!(normalized.max_output_bytes, 4 * 1024 * 1024);
+    }
+}

@@ -78,11 +78,18 @@ async fn submit_execution(
     }
 
     let id = Uuid::new_v4();
-    let limits = request
+    let mut limits = request
         .limits
         .clone()
         .unwrap_or_else(|| state.config.default_limits.clone())
         .normalized();
+    if matches!(
+        request.mode,
+        Some(crate::engine::models::ExecutionMode::AgentOptimized)
+    ) {
+        limits.timeout_ms = limits.timeout_ms.max(8_000);
+        limits.max_output_bytes = limits.max_output_bytes.max(256 * 1024);
+    }
     let record: ExecutionRecord =
         state
             .store
@@ -218,4 +225,16 @@ fn constant_time_eq(a: &[u8], b: &[u8]) -> bool {
         out |= l ^ r;
     }
     out == 0
+}
+
+#[cfg(test)]
+mod tests {
+    use super::constant_time_eq;
+
+    #[test]
+    fn compares_equal_and_non_equal_keys() {
+        assert!(constant_time_eq(b"abc123", b"abc123"));
+        assert!(!constant_time_eq(b"abc123", b"abc124"));
+        assert!(!constant_time_eq(b"abc123", b"abc1234"));
+    }
 }

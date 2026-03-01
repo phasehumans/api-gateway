@@ -51,8 +51,7 @@ fn init_tracing(config: &EngineConfig) {
         .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new(config.log_level.clone()));
     tracing_subscriber::fmt()
         .with_env_filter(filter)
-        .json()
-        .with_current_span(false)
-        .with_span_list(false)
+        .with_target(false)
+        .compact()
         .init();
 }
