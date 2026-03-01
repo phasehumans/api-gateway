@@ -22,7 +22,7 @@ impl MetricsRegistry {
 
     pub fn started(&self) {
         self.started_total.fetch_add(1, Ordering::Relaxed);
-        self.queue_depth.fetch_sub(1, Ordering::Relaxed);
+        self.decrement_queue_depth();
     }
 
     pub fn completed(&self) {
@@ -60,5 +60,33 @@ impl MetricsRegistry {
             self.timed_out_total.load(Ordering::Relaxed),
             self.queue_depth.load(Ordering::Relaxed),
         )
+    }
+
+    fn decrement_queue_depth(&self) {
+        let mut current = self.queue_depth.load(Ordering::Relaxed);
+        while current > 0 {
+            match self.queue_depth.compare_exchange_weak(
+                current,
+                current - 1,
+                Ordering::Relaxed,
+                Ordering::Relaxed,
+            ) {
+                Ok(_) => return,
+                Err(actual) => current = actual,
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::MetricsRegistry;
+
+    #[test]
+    fn queue_depth_does_not_underflow() {
+        let metrics = MetricsRegistry::new();
+        metrics.started();
+        let rendered = metrics.render_prometheus();
+        assert!(rendered.contains("execution_queue_depth 0"));
     }
 }

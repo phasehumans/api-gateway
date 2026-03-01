@@ -39,10 +39,11 @@ impl ExecutionStore {
 
     pub fn mark_running(&self, id: Uuid) {
         if let Some(mut entry) = self.records.get_mut(&id) {
+            let now = now_ms();
             entry.status = ExecutionStatus::Running;
-            entry.started_at_ms = Some(now_ms());
+            entry.started_at_ms = Some(now);
             entry.events.push(ExecutionEvent {
-                ts_ms: now_ms(),
+                ts_ms: now,
                 stage: "running".to_string(),
                 message: "worker started execution".to_string(),
             });
@@ -51,8 +52,9 @@ impl ExecutionStore {
 
     pub fn append_event(&self, id: Uuid, stage: impl Into<String>, message: impl Into<String>) {
         if let Some(mut entry) = self.records.get_mut(&id) {
+            let now = now_ms();
             entry.events.push(ExecutionEvent {
-                ts_ms: now_ms(),
+                ts_ms: now,
                 stage: stage.into(),
                 message: message.into(),
             });
@@ -67,12 +69,13 @@ impl ExecutionStore {
         error: Option<String>,
     ) {
         let snapshot = if let Some(mut entry) = self.records.get_mut(&id) {
+            let now = now_ms();
             entry.status = status;
             entry.output = output;
             entry.error = error;
-            entry.finished_at_ms = Some(now_ms());
+            entry.finished_at_ms = Some(now);
             entry.events.push(ExecutionEvent {
-                ts_ms: now_ms(),
+                ts_ms: now,
                 stage: "finished".to_string(),
                 message: "execution finalized".to_string(),
             });
@@ -103,6 +106,7 @@ impl ExecutionStore {
         request: ExecutionRequest,
         limits: crate::engine::models::ExecutionLimits,
     ) -> ExecutionRecord {
+        let now = now_ms();
         ExecutionRecord {
             id,
             tenant_id,
@@ -112,11 +116,11 @@ impl ExecutionStore {
             output: None,
             error: None,
             events: vec![ExecutionEvent {
-                ts_ms: now_ms(),
+                ts_ms: now,
                 stage: "queued".to_string(),
                 message: "execution accepted and queued".to_string(),
             }],
-            created_at_ms: now_ms(),
+            created_at_ms: now,
             started_at_ms: None,
             finished_at_ms: None,
         }
